@@ -1,6 +1,7 @@
-package fancaffe.board.domain.member;
+package fancaffe.board.domain.member.entity;
 
 import fancaffe.board.domain.BaseTimeEntity;
+import fancaffe.board.domain.member.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,13 +21,13 @@ public class Member extends BaseTimeEntity {
     @Column(name="member_id")
     private Long id;
 
-    @Column(nullable = false, length = 30, unique = true)
-    private String nickname;
 
     private String password;
 
-    @Column(nullable = false, length = 30)
-    private String name;
+    @Column(nullable = false, length = 30, unique = true)
+    private String username;
+
+    private String token;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -38,19 +39,13 @@ public class Member extends BaseTimeEntity {
         this.password = passwordEncoder.encode(password);
     }
 
-    public void updateName(String name){
-        this.name = name;
-    }
-
-    public void updateNickName(String nickname){
-        this.nickname = nickname;
+    public void updateUserName(String username){
+        this.username = username;
     }
 
     public void encodePassword(PasswordEncoder passwordEncoder){
         this.password = passwordEncoder.encode(password);
     }
 
-    public enum Role{
-        USER, ADMIN
-    }
+
 }
