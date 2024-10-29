@@ -30,7 +30,7 @@ public class TokenProvider {
 //        );
         // 만료 시간 설정 (15초 후)
         Instant nowUtc = Instant.now(); // 현재 UTC 시간
-        Instant expiryInstant = nowUtc.plus(15, ChronoUnit.MINUTES); // 15초 후의 UTC 시간
+        Instant expiryInstant = nowUtc.plus(1, ChronoUnit.DAYS); // 15초 후의 UTC 시간
 
         // KST로 변환
         LocalDateTime expiryDateTimeKST = LocalDateTime.ofInstant(expiryInstant, ZoneId.of("Asia/Seoul"));
