@@ -32,13 +32,26 @@ public class MemberService {
 
     public MemberDTO getByCredentials(final String username, final String password, final PasswordEncoder encoder){
         final Optional<Member> originalMember = memberRepository.findByUsername(username);
-
         if(originalMember.isPresent() && encoder.matches(password,originalMember.get().getPassword())){
             return MemberDTO.builder()
-                    .username(username)
                     .id(originalMember.get().getId())
+                    .username(username)
                     .build();
         }
         return null;
+    }
+
+    public void saveRefreshToken(MemberDTO mDTO, String refreshToken) {
+        final Optional<Member> originalMember = memberRepository.findByUsername(mDTO.getUsername());
+
+        if(originalMember.isPresent() ){
+            originalMember.get().updateRefreshToken(refreshToken);
+            memberRepository.save(originalMember.get());
+        }
+    }
+
+    public Member getByUserId(Long userId) {
+        Optional<Member> member = memberRepository.findById(userId);
+        return member.orElse(null);
     }
 }

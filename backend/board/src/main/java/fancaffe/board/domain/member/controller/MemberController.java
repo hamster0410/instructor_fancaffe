@@ -1,20 +1,17 @@
 package fancaffe.board.domain.member.controller;
 
 import fancaffe.board.domain.member.dto.MemberDTO;
+import fancaffe.board.domain.member.dto.TokenDTO;
 import fancaffe.board.domain.member.entity.Member;
 import fancaffe.board.domain.member.service.MemberService;
 import fancaffe.board.global.security.TokenProvider;
 import fancaffe.board.global.dto.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -61,12 +58,14 @@ public class MemberController {
         MemberDTO mDTO = memberService.getByCredentials(memberDTO.getUsername(), memberDTO.getPassword(), passwordEncoder);
 
         if(mDTO != null){
-            final String token = tokenProvider.create(mDTO);
-            System.out.println("controller here " + token);
+            final String AccessToken = tokenProvider.AccessTokenCreate(mDTO);
+            final String RefreshToken = tokenProvider.RefreshTokenCreate(mDTO);
+            memberService.saveRefreshToken(mDTO,RefreshToken);
             final MemberDTO responseMemberDTO = MemberDTO.builder()
                     .username(mDTO.getUsername())
                     .id(mDTO.getId())
-                    .token(token)
+                    .AccessToken(AccessToken)
+                    .RefreshToken(RefreshToken)
                     .build();
             return ResponseEntity.ok().body(responseMemberDTO);
         }else{
@@ -76,5 +75,30 @@ public class MemberController {
 
             return ResponseEntity.badRequest().body(responseDTO);
         }
+    }
+
+    @PostMapping("/token")
+    public ResponseEntity<?> createNewAccessToken( @RequestBody TokenDTO tokenDTO){
+
+        String refreshToken = tokenDTO.getRefreshToken();
+
+        if(tokenProvider.validateRefreshToken(refreshToken)){
+
+            final TokenDTO token = TokenDTO.builder()
+                    .AccessToken(tokenProvider.AccessTokenCreate(tokenProvider.extractRefreshToken(refreshToken)))
+                    .build();
+
+            return ResponseEntity.ok().body(token);
+
+        }else{
+            System.out.println("error processing");
+            ResponseDTO responseDTO = ResponseDTO.builder()
+                    .error("AccessToken renew failed.")
+                    .build();
+
+            return ResponseEntity.badRequest().body(responseDTO);
+        }
+
+
     }
 }

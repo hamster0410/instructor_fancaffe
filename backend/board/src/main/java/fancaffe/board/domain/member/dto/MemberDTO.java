@@ -1,7 +1,6 @@
 package fancaffe.board.domain.member.dto;
 
 import fancaffe.board.domain.member.Role;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +18,11 @@ public class MemberDTO {
 
     private String username;
 
-    private String token;
+    private String AccessToken;
+
+    private String RefreshToken;
 
     private Role role;
+
+
 }

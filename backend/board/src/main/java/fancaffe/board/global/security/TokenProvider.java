@@ -2,17 +2,17 @@ package fancaffe.board.global.security;
 
 import fancaffe.board.domain.member.dto.MemberDTO;
 import fancaffe.board.domain.member.entity.Member;
+import fancaffe.board.domain.member.service.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
@@ -23,20 +23,44 @@ public class TokenProvider {
     @Value("${jwt.secret}")
     private String SECRET_KEY;
 
-    public String create(MemberDTO member){
-//        Date expiryDate = Date.from(
-//                Instant.now()
-//                        .plus(15, ChronoUnit.SECONDS)
-//        );
-        // 만료 시간 설정 (15초 후)
-        Instant nowUtc = Instant.now(); // 현재 UTC 시간
-        Instant expiryInstant = nowUtc.plus(1, ChronoUnit.DAYS); // 15초 후의 UTC 시간
+    @Autowired
+    MemberService memberService;
 
-        // KST로 변환
-        LocalDateTime expiryDateTimeKST = LocalDateTime.ofInstant(expiryInstant, ZoneId.of("Asia/Seoul"));
-        Date expiryDate = Date.from(expiryDateTimeKST.atZone(ZoneId.systemDefault()).toInstant());
+    public String AccessTokenCreate(MemberDTO member){
+        Date expiryDate = Date.from(
+                Instant.now()
+                        .plus(15, ChronoUnit.HOURS)
+        );
 
-        System.out.println("expiry date" + expiryDate);
+        return Jwts.builder()
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                .setSubject(member.getId().toString())
+                .setIssuer("demo app")
+                .setIssuedAt(new Date())
+                .setExpiration(expiryDate)
+                .compact();
+    }
+    public String AccessTokenCreate(String memberId) {
+        Date expiryDate = Date.from(
+                Instant.now()
+                        .plus(15, ChronoUnit.HOURS)
+        );
+
+        return Jwts.builder()
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                .setSubject(memberId)
+                .setIssuer("demo app")
+                .setIssuedAt(new Date())
+                .setExpiration(expiryDate)
+                .compact();
+    }
+    public String RefreshTokenCreate(MemberDTO member) {
+        Date expiryDate = Date.from(
+                Instant.now()
+                        .plus(15, ChronoUnit.DAYS)
+        );
+
+
         return Jwts.builder()
                 .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
                 .setSubject(member.getId().toString())
@@ -71,4 +95,30 @@ public class TokenProvider {
         System.out.println(claims.getIssuer());
         return claims.getSubject();
     }
+
+    public boolean validateRefreshToken(String refreshToken) {
+        try{
+            String memberId = extractRefreshToken(refreshToken);
+
+            Member member = memberService.getByUserId(Long.valueOf(memberId));
+
+            if(member.getRefreshtoken().equals(refreshToken)) return true;
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return false;
+    }
+    public String extractRefreshToken(String refreshToken){
+
+        return Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .build().parseClaimsJws(refreshToken)
+                .getBody().getSubject();
+
+    }
+
+
+
 }

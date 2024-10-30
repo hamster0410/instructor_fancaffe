@@ -33,9 +33,9 @@ public class PostApiController {
     }
 
     @GetMapping("/best")
-    public ResponseEntity<?> best_list(@RequestParam(value = "page", defaultValue = "0") int pageid){
+    public ResponseEntity<?> best_list(@RequestParam(value = "page", defaultValue = "1") int pageid){
         try{
-            List<PostResponse> paging = postService.getBestPost(pageid);
+            List<PostResponse> paging = postService.getBestPost(pageid-1);
             return ResponseEntity.ok().body(paging);
         }catch(Exception e){
             ResponseDTO responseDTO = ResponseDTO.builder()
@@ -47,9 +47,9 @@ public class PostApiController {
     }
 
     @GetMapping("/new")
-    public ResponseEntity<?> main_list(@RequestParam(value = "page", defaultValue = "0") int pageid){
+    public ResponseEntity<?> main_list(@RequestParam(value = "page", defaultValue = "1") int pageid){
         try{
-            List<PostResponse> paging = postService.getPosts(pageid);
+            List<PostResponse> paging = postService.getPosts(pageid-1);
             return ResponseEntity.ok().body(paging);
         }catch(Exception e){
             ResponseDTO responseDTO = ResponseDTO.builder()
@@ -61,9 +61,9 @@ public class PostApiController {
     }
 
     @GetMapping("/{category}")
-    public ResponseEntity<?> main_list(@PathVariable("category") String category,@RequestParam(value = "page", defaultValue = "0") int pageid){
+    public ResponseEntity<?> main_list(@PathVariable("category") String category,@RequestParam(value = "page1", defaultValue = "0") int pageid){
         try{
-            List<PostResponse> paging = postService.getCategoryPosts(pageid, category);
+            List<PostResponse> paging = postService.getCategoryPosts(pageid-1, category);
             return ResponseEntity.ok().body(paging);
         }catch(Exception e){
             ResponseDTO responseDTO = ResponseDTO.builder()

@@ -22,18 +22,21 @@ import java.io.IOException;
 @Slf4j
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
     @Autowired
     private TokenProvider tokenProvider;
 
 @Override
 protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
     try {
-        final String token = parseBearerToken(request);
+        final String accessToken = parseBearerToken(request);
+        final String refreshToken = parseRefreshToken(request);
+
         log.info("filter is running...");
 
-        if (token != null && !token.equalsIgnoreCase("null")) {
+        if (accessToken != null && !accessToken.equalsIgnoreCase("null")) {
             // Token validation
-            String userId = tokenProvider.validateAndGetUserId(token);
+            String userId = tokenProvider.validateAndGetUserId(accessToken);
             log.info("Authenticated user ID: " + userId);
 
             // Authentication setup
@@ -42,7 +45,22 @@ protected void doFilterInternal(HttpServletRequest request, HttpServletResponse 
             SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
             securityContext.setAuthentication(authentication);
             SecurityContextHolder.setContext(securityContext);
-        }
+        }// Access Token이 만료되었을 때 Refresh Token으로 재인증 시도
+//        else if (refreshToken != null && !refreshToken.equalsIgnoreCase("null")) {
+//            if (tokenProvider.validateRefreshToken(refreshToken)) {
+//                String userId = tokenProvider.getUserIdFromRefreshToken(refreshToken);
+//                log.info("Authenticated user ID using Refresh Token: " + userId);
+//
+//                AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, null, AuthorityUtils.NO_AUTHORITIES);
+//                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+//                SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+//                securityContext.setAuthentication(authentication);
+//                SecurityContextHolder.setContext(securityContext);
+//            } else {
+//                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Refresh Token");
+//                return;
+//            }
+//        }
     } catch (ExpiredJwtException e) {
         logger.error("Token has expired", e);
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token has expired");
@@ -61,5 +79,9 @@ protected void doFilterInternal(HttpServletRequest request, HttpServletResponse 
             return bearerToken.substring(7);
         }
         return null;
+    }
+
+    private String parseRefreshToken(HttpServletRequest request) {
+        return request.getHeader("Refresh-Token"); // Refresh Token은 Refresh-Token 헤더에서 직접 추출
     }
 }
