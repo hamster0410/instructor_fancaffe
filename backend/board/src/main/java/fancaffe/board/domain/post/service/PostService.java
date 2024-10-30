@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,6 +58,17 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
+    public List<PostResponse> getNewPosts(int page) {
+        Pageable pageable = (Pageable) PageRequest.of(page,10);
+        Page<Post> postPage = this.postRepository.findAllByOrderByCreatedDateDesc(pageable);  // Post 페이지 가져오기
+
+        // Post를 PostResponse로 변환
+        return postPage.getContent().stream()
+                .map(PostResponse::new)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public List<PostResponse> getCategoryPosts(int page, String category) {
         Pageable pageable = (Pageable) PageRequest.of(page,10);
         Page<Post> postPage = this.postRepository.findByCategory(pageable,category);
@@ -80,8 +90,6 @@ public class PostService {
                 .contents(params.getContents())
                 .category(params.getCategory())
                 .hits(0L)
-                .createdAt(new Date())
-                .modifiedAt(new Date())
                 .build();
         postRepository.save(post);
         return post.toDto();
@@ -124,4 +132,6 @@ public class PostService {
         if(String.valueOf(post.getMember().getId()).equals(userId))
             postRepository.delete(post);
     }
+
+
 }

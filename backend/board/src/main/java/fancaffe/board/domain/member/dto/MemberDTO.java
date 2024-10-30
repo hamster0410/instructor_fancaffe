@@ -16,6 +16,8 @@ public class MemberDTO {
 
     private String password;
 
+    private String mail;
+
     private String username;
 
     private String AccessToken;

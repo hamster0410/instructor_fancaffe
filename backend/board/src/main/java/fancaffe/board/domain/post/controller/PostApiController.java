@@ -49,7 +49,7 @@ public class PostApiController {
     @GetMapping("/new")
     public ResponseEntity<?> main_list(@RequestParam(value = "page", defaultValue = "1") int pageid){
         try{
-            List<PostResponse> paging = postService.getPosts(pageid-1);
+            List<PostResponse> paging = postService.getNewPosts(pageid-1);
             return ResponseEntity.ok().body(paging);
         }catch(Exception e){
             ResponseDTO responseDTO = ResponseDTO.builder()
@@ -112,12 +112,6 @@ public class PostApiController {
         }
     }
 
-//    // 게시글 상세정보 조회
-//    @GetMapping("/{id}")
-//    public PostResponse findPostById(@RequestHeader("Authorization") String token, @PathVariable("id") final Long id) {
-//        System.out.println("PostService : findpostbyid");
-//        return postService.findPostById(id);
-//    }
 
     // 게시글 작성자 확인
     @GetMapping("/{category}/{post_id}/edit")

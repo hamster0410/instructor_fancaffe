@@ -1,14 +1,20 @@
 package fancaffe.board.domain.member.entity;
 
 import fancaffe.board.domain.BaseTimeEntity;
+
+import fancaffe.board.domain.comment.entity.Comment;
+import fancaffe.board.domain.heart.entity.Heart;
 import fancaffe.board.domain.member.Role;
-import fancaffe.board.domain.member.dto.MemberDTO;
+import fancaffe.board.domain.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "MEMBER")
 @Getter
@@ -28,18 +34,31 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, length = 30, unique = true)
     private String username;
 
+    @Column(nullable = false, length = 30, unique = true)
+    private String mail;
+
     private String refreshtoken;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    public void updatePassword(PasswordEncoder passwordEncoder, String password){
-        this.password = passwordEncoder.encode(password);
-    }
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> posts = new ArrayList<>(); // 컬렉션 초기화
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Heart> hearts = new ArrayList<>(); // 사용자가 누른 좋아요 리스트
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>(); // 사용자가 누른 좋아요 리스트
 
     public void updateUserName(String username){
         this.username = username;
     }
+
+    public void updatePassword(PasswordEncoder passwordEncoder, String password){
+        this.password = passwordEncoder.encode(password);
+    }
+
 
     public void updateRefreshToken(String refreshtoken){
         this.refreshtoken = refreshtoken;
@@ -49,4 +68,7 @@ public class Member extends BaseTimeEntity {
         this.password = passwordEncoder.encode(password);
     }
 
+    public void updateRole(Role role) {
+        this.role = role;
+    }
 }

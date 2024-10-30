@@ -1,21 +1,26 @@
 package fancaffe.board.domain.post.entity;
 
+import fancaffe.board.domain.BaseTimeEntity;
+
+import fancaffe.board.domain.comment.entity.Comment;
+import fancaffe.board.domain.heart.entity.Heart;
 import fancaffe.board.domain.member.entity.Member;
 import fancaffe.board.domain.post.dto.PostResponse;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name="POST")
-public class Post {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@AllArgsConstructor //생성자 자동생성
+public class Post extends BaseTimeEntity {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="post_id")
     private Long id;
 
     @Setter
@@ -23,7 +28,8 @@ public class Post {
     private String title;
 
     @Setter
-    @Column(columnDefinition = "TEXT")
+    @Lob
+    @Column
     private String contents;
 
     @Setter
@@ -33,27 +39,24 @@ public class Post {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Heart> hearts = new ArrayList<>(); // 좋아요 리스트
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>(); // 좋아요 리스트
+
     @Setter
     @Column
     private String category;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_at", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
-    private Date createdAt;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "modified_at", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
-    private Date modifiedAt;
 
     @Builder
-    public Post(String title, String contents, Member member,String category,Long hits,Date createdAt, Date modifiedAt){
+    public Post(String title, String contents, Member member,String category,Long hits){
         this.title = title;
         this.contents = contents;
         this.member = member;
         this.category = category;
         this.hits = hits;
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
     }
 
     public PostResponse toDto() {

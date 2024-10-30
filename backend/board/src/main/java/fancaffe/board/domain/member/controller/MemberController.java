@@ -35,12 +35,13 @@ public class MemberController {
             Member member = Member.builder()
                     .username(memberDTO.getUsername())
                     .password(passwordEncoder.encode((memberDTO.getPassword())))
-                    .role(memberDTO.getRole())
+                    .mail(memberDTO.getMail())
                     .build();
             Member registeredMember = memberService.create(member);
             MemberDTO responseMemberDTO = MemberDTO.builder()
                     .id(registeredMember.getId())
                     .username(registeredMember.getUsername())
+                    .mail(registeredMember.getMail())
                     .build();
 
             return ResponseEntity.ok().body(responseMemberDTO);
