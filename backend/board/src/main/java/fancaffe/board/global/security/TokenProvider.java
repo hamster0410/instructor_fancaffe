@@ -20,25 +20,10 @@ public class TokenProvider {
     @Value("${jwt.secret}")
     private String SECRET_KEY;
 
-
-    public String AccessTokenCreate(MemberDTO member){
-        Date expiryDate = Date.from(
-                Instant.now()
-                        .plus(15, ChronoUnit.HOURS)
-        );
-
-        return Jwts.builder()
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
-                .setSubject(member.getId().toString())
-                .setIssuer("demo app")
-                .setIssuedAt(new Date())
-                .setExpiration(expiryDate)
-                .compact();
-    }
     public String AccessTokenCreate(String memberId) {
         Date expiryDate = Date.from(
                 Instant.now()
-                        .plus(15, ChronoUnit.HOURS)
+                        .plus(15, ChronoUnit.SECONDS)
         );
 
         return Jwts.builder()
@@ -52,7 +37,7 @@ public class TokenProvider {
     public String RefreshTokenCreate(MemberDTO member) {
         Date expiryDate = Date.from(
                 Instant.now()
-                        .plus(15, ChronoUnit.DAYS)
+                        .plus(15, ChronoUnit.HOURS)
         );
 
 

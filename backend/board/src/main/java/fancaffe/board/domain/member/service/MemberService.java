@@ -65,7 +65,7 @@ public class MemberService {
 
     public TokenDTO login(MemberDTO mDTO) {
 
-        final String AccessToken = tokenProvider.AccessTokenCreate(mDTO);
+        final String AccessToken = tokenProvider.AccessTokenCreate(String.valueOf(mDTO.getId()));
         final String RefreshToken = tokenProvider.RefreshTokenCreate(mDTO);
         saveRefreshToken(mDTO,RefreshToken);
         return TokenDTO.builder().AccessToken(AccessToken).RefreshToken(RefreshToken).build();

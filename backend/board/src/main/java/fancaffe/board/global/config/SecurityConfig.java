@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
 //                        .requestMatchers("/auth/signup", "/auth/signin","/auth/token","/auth/mypage").permitAll()
 //                        .anyRequest().authenticated()
-                          .requestMatchers("/post/write","/*/*/edit","/*/*/delete").authenticated()
+                          .requestMatchers("/post/write","/*/*/edit","/*/*/delete","/auth/mypage").authenticated()
                                     .anyRequest().permitAll()
                 );
 
