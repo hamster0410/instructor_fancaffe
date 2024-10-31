@@ -61,7 +61,7 @@ public class PostApiController {
     }
 
     @GetMapping("/{category}")
-    public ResponseEntity<?> main_list(@PathVariable("category") String category,@RequestParam(value = "page1", defaultValue = "0") int pageid){
+    public ResponseEntity<?> main_list(@PathVariable("category") String category,@RequestParam(value = "page1", defaultValue = "1") int pageid){
         try{
             List<PostResponse> paging = postService.getCategoryPosts(pageid-1, category);
             return ResponseEntity.ok().body(paging);
@@ -158,12 +158,15 @@ public class PostApiController {
                                         @RequestHeader("Authorization") String token,
                                         @PathVariable("category") String category,
                                         @PathVariable("post_id") Long postId){
+        ResponseDTO responseDTO;
         try{
             postService.deletePost(token,postId);
-
-            return ResponseEntity.ok().build();
+            responseDTO = ResponseDTO.builder().
+                    message("delete success")
+                    .build();
+            return ResponseEntity.ok().body(responseDTO);
         }catch(Exception e){
-            ResponseDTO responseDTO = ResponseDTO.builder()
+            responseDTO = ResponseDTO.builder()
                     .error("editing fail").build();
             return ResponseEntity
                     .badRequest()

@@ -7,21 +7,16 @@ import fancaffe.board.domain.post.dto.PostRequest;
 import fancaffe.board.domain.post.dto.PostResponse;
 import fancaffe.board.domain.post.entity.Post;
 import fancaffe.board.domain.post.repository.PostRepository;
-import fancaffe.board.global.dto.ResponseDTO;
 import fancaffe.board.global.security.TokenProvider;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -81,7 +76,7 @@ public class PostService {
     // 게시글 저장
     @Transactional
     public PostResponse savePost(final PostRequest params, String token) {
-        String userId = tokenProvider.extractAllClaims(token);
+        String userId = tokenProvider.extractIdByAccessToken(token);
         Member member = memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new EntityNotFoundException("Member not found with id: " + userId));
         Post post = Post.builder()
@@ -106,7 +101,7 @@ public class PostService {
 
     //현재 접속한 사람이 게시글을 작성한 사람인지 확인
     public PostResponse checkPostWriter(String token,  Long postId) {
-        String userId = tokenProvider.extractAllClaims(token);
+        String userId = tokenProvider.extractIdByAccessToken(token);
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("post not found : " + postId));
         if(String.valueOf(post.getMember().getId()).equals(userId)){
            return post.toDto();
@@ -127,7 +122,7 @@ public class PostService {
     }
 
     public void deletePost(String token, Long postId) {
-        String userId = tokenProvider.extractAllClaims(token);
+        String userId = tokenProvider.extractIdByAccessToken(token);
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("post not found : " + postId));
         if(String.valueOf(post.getMember().getId()).equals(userId))
             postRepository.delete(post);

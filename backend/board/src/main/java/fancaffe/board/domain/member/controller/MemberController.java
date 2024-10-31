@@ -24,8 +24,6 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
-    @Autowired
-    private TokenProvider tokenProvider;
 
     @PostMapping("/signup")
     public ResponseEntity<ResponseDTO> registerMember(@RequestBody MemberDTO memberDTO) {
@@ -80,30 +78,21 @@ public class MemberController {
     @PostMapping("/signin")
     public ResponseEntity<?> signin(@RequestBody MemberDTO memberDTO){
         ResponseDTO responseDTO;
+        String message= "";
         try{
-            MemberDTO mDTO = memberService.getByCredentials(memberDTO.getUsername(), memberDTO.getPassword());
+            MemberDTO mDTO = memberService.getByCredentials(memberDTO);
+
             if(mDTO != null){
-                final String AccessToken = tokenProvider.AccessTokenCreate(mDTO);
-                final String RefreshToken = tokenProvider.RefreshTokenCreate(mDTO);
-                memberService.saveRefreshToken(mDTO,RefreshToken);
-                final MemberDTO responseMemberDTO = MemberDTO.builder()
-                        .username(mDTO.getUsername())
-                        .id(mDTO.getId())
-                        .AccessToken(AccessToken)
-                        .RefreshToken(RefreshToken)
-                        .build();
-                return ResponseEntity.ok().body(responseMemberDTO);
+                final TokenDTO tokenDTO = memberService.login(mDTO);
+                return ResponseEntity.ok().body(tokenDTO);
             }else{
-                responseDTO = ResponseDTO.builder()
-                        .error("User not found")
-                        .build();
-                return ResponseEntity.badRequest().body(responseDTO);
+                throw new IllegalArgumentException("id password wrong");
             }
         }catch(Exception e){
             log.error("login failed for user: {}, error: {}", memberDTO.getUsername(), e.getMessage());
 
             responseDTO = ResponseDTO.builder()
-                    .error("login failed.")
+                    .error(e.getMessage())
                     .build();
 
             return ResponseEntity
@@ -111,16 +100,35 @@ public class MemberController {
                     .body(responseDTO);        }
     }
 
+    @GetMapping("/mypage")
+    public ResponseEntity<?> memberInfo(@RequestHeader("Authorization") String token){
+         try{
+            MemberDTO memberDto = memberService.getByToken(token);
+            return ResponseEntity.ok().body(memberDto);
+        }catch (Exception e){
+             log.error("mypage failed  error: {}", e.getMessage());
+
+             ResponseDTO responseDTO = ResponseDTO.builder()
+                     .error("mypage failed.")
+                     .build();
+
+             return ResponseEntity
+                     .badRequest()
+                     .body(responseDTO);
+        }
+    }
+
     @PostMapping("/mypage")
      public ResponseEntity<?> memberModify(@RequestHeader("Authorization") String token, @RequestBody MemberDTO memberDTO){
         ResponseDTO responseDTO;
         try{
-           memberService.modify(memberDTO);
+           memberService.modify(memberDTO, token);
+           responseDTO = ResponseDTO.builder().message("modify success").build();
+           return ResponseEntity.ok().body(responseDTO);
 
-           return ResponseEntity.ok().build();
         }catch(Exception e){
             responseDTO = ResponseDTO.builder()
-                    .error("MemberModify failed.").build();
+                    .error(e.getMessage()).build();
             return ResponseEntity
                     .badRequest()
                     .body(responseDTO);
@@ -129,18 +137,12 @@ public class MemberController {
 
     @PostMapping("/token")
     public ResponseEntity<?> createNewAccessToken( @RequestBody TokenDTO tokenDTO){
-
-        String refreshToken = tokenDTO.getRefreshToken();
-
-        if(tokenProvider.validateRefreshToken(refreshToken)){
-
-            final TokenDTO token = TokenDTO.builder()
-                    .AccessToken(tokenProvider.AccessTokenCreate(tokenProvider.extractRefreshToken(refreshToken)))
-                    .build();
-
+        try{
+            TokenDTO token = memberService.getNewAccessToken(tokenDTO);
             return ResponseEntity.ok().body(token);
 
-        }else{
+        }catch (Exception e)
+        {
             System.out.println("error processing");
             ResponseDTO responseDTO = ResponseDTO.builder()
                     .error("AccessToken renew failed.")
@@ -148,7 +150,6 @@ public class MemberController {
 
             return ResponseEntity.badRequest().body(responseDTO);
         }
-
 
     }
 }

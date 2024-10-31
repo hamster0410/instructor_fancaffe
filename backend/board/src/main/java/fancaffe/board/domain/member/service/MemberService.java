@@ -2,6 +2,7 @@ package fancaffe.board.domain.member.service;
 
 import fancaffe.board.domain.member.Role;
 import fancaffe.board.domain.member.dto.MemberDTO;
+import fancaffe.board.domain.member.dto.TokenDTO;
 import fancaffe.board.domain.member.entity.Member;
 import fancaffe.board.domain.member.repository.MemberRepository;
 import fancaffe.board.global.security.TokenProvider;
@@ -19,6 +20,13 @@ public class MemberService {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    private TokenProvider tokenProvider;
+
+    @Autowired
+    public void setTokenProvider(TokenProvider tokenProvider) {
+        this.tokenProvider = tokenProvider;
+    }
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -55,11 +63,19 @@ public class MemberService {
         return 0;
     }
 
-    public void modify(MemberDTO memberDTO) {
+    public TokenDTO login(MemberDTO mDTO) {
+
+        final String AccessToken = tokenProvider.AccessTokenCreate(mDTO);
+        final String RefreshToken = tokenProvider.RefreshTokenCreate(mDTO);
+        saveRefreshToken(mDTO,RefreshToken);
+        return TokenDTO.builder().AccessToken(AccessToken).RefreshToken(RefreshToken).build();
+    }
+
+    public void modify(MemberDTO memberDTO, String token) {
         System.out.println("Member Service modify");
 
-
-        Optional<Member> member = memberRepository.findByUsername(memberDTO.getUsername());
+        Long userId = Long.valueOf(tokenProvider.extractIdByAccessToken(token));
+        Optional<Member> member = memberRepository.findById(userId);
 
         if(memberRepository.existsByMail(memberDTO.getMail())){
             log.warn("Mail already exists {}",memberDTO.getMail());
@@ -67,7 +83,7 @@ public class MemberService {
         }
         if(memberRepository.existsByNickname(memberDTO.getNickname())){
             log.warn("Nickname already exists {}",memberDTO.getNickname());
-            throw new RuntimeException("mail already exists");
+            throw new RuntimeException("Nickname already exists");
         }
         if(member.isPresent()){
             member.get().setMail(memberDTO.getMail());
@@ -76,13 +92,15 @@ public class MemberService {
         }
     }
 
-    public MemberDTO getByCredentials(final String username, final String password){
+    public MemberDTO getByCredentials(final MemberDTO memberDTO){
         System.out.println("Member Service getByCredentials");
-        final Optional<Member> originalMember = memberRepository.findByUsername(username);
-        if(originalMember.isPresent() && passwordEncoder.matches(password,originalMember.get().getPassword())){
+        final Optional<Member> originalMember = memberRepository.findByUsername(memberDTO.getUsername());
+        if(originalMember.isPresent() && passwordEncoder.matches(memberDTO.getPassword(),originalMember.get().getPassword())){
+            System.out.println("member is present and pw is matching");
+
             return MemberDTO.builder()
                     .id(originalMember.get().getId())
-                    .username(username)
+                    .username(memberDTO.getUsername())
                     .build();
         }
         return null;
@@ -104,6 +122,39 @@ public class MemberService {
         return member.orElse(null);
     }
 
+    public MemberDTO getByToken(String token) {
+        System.out.println("Member Service getByToken");
+        Long userId = Long.valueOf(tokenProvider.extractIdByAccessToken(token));
+        System.out.println(userId);
+        Optional<Member> member = memberRepository.findById(userId);
+        if(member.isPresent()){
+            return MemberDTO.builder()
+                    .id(member.get().getId())
+                    .username(member.get().getUsername())
+                    .mail(member.get().getMail())
+                    .nickname(member.get().getNickname())
+                    .build();
+        }
+        return null;
+    }
 
 
+    public TokenDTO getNewAccessToken(TokenDTO tokenDTO) {
+        System.out.println("Member Service getNewAccessToken");
+
+        String refreshToken = tokenDTO.getRefreshToken();
+        String memberId = tokenProvider.extractIdByRefreshToken(refreshToken);
+        Member member = getByUserId(Long.valueOf(memberId));
+
+        if(member.getRefreshtoken().equals(refreshToken)){
+
+            final TokenDTO token = TokenDTO.builder()
+                    .AccessToken(tokenProvider.AccessTokenCreate(tokenProvider.extractIdByRefreshToken(refreshToken)))
+                    .build();
+
+            return token;
+        }
+
+        throw new IllegalArgumentException("Invalid Refresh Token");
+    }
 }
