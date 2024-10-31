@@ -92,6 +92,17 @@ public class MemberService {
         }
     }
 
+    public void delete(String token) {
+        System.out.println("Member Service delete");
+        Long userId = Long.valueOf(tokenProvider.extractIdByAccessToken(token));
+        Optional<Member> member = memberRepository.findById(userId);
+        if(member.isPresent()){
+            memberRepository.delete(member.get());
+        }else{
+            throw new RuntimeException("User is not exists");
+        }
+    }
+
     public MemberDTO getByCredentials(final MemberDTO memberDTO){
         System.out.println("Member Service getByCredentials");
         final Optional<Member> originalMember = memberRepository.findByUsername(memberDTO.getUsername());
@@ -157,4 +168,6 @@ public class MemberService {
 
         throw new IllegalArgumentException("Invalid Refresh Token");
     }
+
+
 }

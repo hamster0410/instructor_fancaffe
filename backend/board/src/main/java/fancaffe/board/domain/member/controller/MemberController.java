@@ -128,6 +128,23 @@ public class MemberController {
         }
     }
 
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> memberDelete(@RequestHeader("Authorization") String token){
+        ResponseDTO responseDTO;
+        try{
+            memberService.delete(token);
+            responseDTO = ResponseDTO.builder().message("delete success").build();
+            return ResponseEntity.ok().body(responseDTO);
+        }catch(Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
+
     @PostMapping("/token")
     public ResponseEntity<?> createNewAccessToken( @RequestBody TokenDTO tokenDTO){
         try{
@@ -143,6 +160,6 @@ public class MemberController {
 
             return ResponseEntity.badRequest().body(responseDTO);
         }
-
     }
+
 }
