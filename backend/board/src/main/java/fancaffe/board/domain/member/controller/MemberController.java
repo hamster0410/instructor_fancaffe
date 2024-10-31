@@ -3,18 +3,11 @@ package fancaffe.board.domain.member.controller;
 import fancaffe.board.domain.member.dto.MemberDTO;
 import fancaffe.board.domain.member.dto.TokenDTO;
 import fancaffe.board.domain.member.service.MemberService;
-import fancaffe.board.global.security.TokenProvider;
 import fancaffe.board.global.dto.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Slf4j
 @RestController
