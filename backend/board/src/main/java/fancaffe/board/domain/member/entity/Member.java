@@ -7,10 +7,7 @@ import fancaffe.board.domain.heart.entity.Heart;
 import fancaffe.board.domain.member.Role;
 import fancaffe.board.domain.post.entity.Post;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
@@ -28,14 +25,19 @@ public class Member extends BaseTimeEntity {
     @Column(name="member_id")
     private Long id;
 
-
+    @Setter
     private String password;
 
     @Column(nullable = false, length = 30, unique = true)
     private String username;
 
+    @Setter
     @Column(nullable = false, length = 30, unique = true)
     private String mail;
+
+    @Setter
+    @Column(nullable = false, length = 30, unique = true)
+    private String nickname;
 
     private String refreshtoken;
 

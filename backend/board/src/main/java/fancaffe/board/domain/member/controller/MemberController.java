@@ -2,7 +2,6 @@ package fancaffe.board.domain.member.controller;
 
 import fancaffe.board.domain.member.dto.MemberDTO;
 import fancaffe.board.domain.member.dto.TokenDTO;
-import fancaffe.board.domain.member.entity.Member;
 import fancaffe.board.domain.member.service.MemberService;
 import fancaffe.board.global.security.TokenProvider;
 import fancaffe.board.global.dto.ResponseDTO;
@@ -12,6 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -24,30 +27,50 @@ public class MemberController {
     @Autowired
     private TokenProvider tokenProvider;
 
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
     @PostMapping("/signup")
-    public ResponseEntity<?> registerMember(@RequestBody MemberDTO memberDTO){
-        try{
-            if(memberDTO == null || memberDTO.getPassword() == null) {
-                throw new RuntimeException("Invalid Password Value.");
+    public ResponseEntity<ResponseDTO> registerMember(@RequestBody MemberDTO memberDTO) {
+        ResponseDTO responseDTO;
+        String message;
+        try {
+            int result = memberService.create(memberDTO);
+            // result 값을 기준으로 응답 메시지 결정
+            switch (result) {
+                case 0:
+                    message = "SignUp success";
+                    break;
+                case 1:
+                    message = "Username already exists";
+                    break;
+                case 2:
+                    message = "Email already exists";
+                    break;
+                case 3:
+                    message = "Nickname already exists";
+                    break;
+                default:
+                    message = "Sign Up Failed";
+                    break;
             }
-            Member member = Member.builder()
-                    .username(memberDTO.getUsername())
-                    .password(passwordEncoder.encode((memberDTO.getPassword())))
-                    .mail(memberDTO.getMail())
-                    .build();
-            Member registeredMember = memberService.create(member);
-            MemberDTO responseMemberDTO = MemberDTO.builder()
-                    .id(registeredMember.getId())
-                    .username(registeredMember.getUsername())
-                    .mail(registeredMember.getMail())
+
+            // 응답 DTO 빌드 및 반환
+            responseDTO = ResponseDTO.builder()
+                    .message(message)
                     .build();
 
-            return ResponseEntity.ok().body(responseMemberDTO);
-        }catch(Exception e){
-            ResponseDTO responseDTO = ResponseDTO.builder()
-            .error("Login failed.").build();
+            if(result == 0){
+                return ResponseEntity.ok(responseDTO);
+            }else{
+                return ResponseEntity.badRequest().body(responseDTO);
+            }
+
+        } catch (Exception e) {
+            // 예외 상황 처리 및 로그 기록
+            log.error("Signup failed for user: {}, error: {}", memberDTO.getUsername(), e.getMessage());
+
+            responseDTO = ResponseDTO.builder()
+                    .error("Signup failed.")
+                    .build();
+
             return ResponseEntity
                     .badRequest()
                     .body(responseDTO);
@@ -55,26 +78,52 @@ public class MemberController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticate(@RequestBody MemberDTO memberDTO){
-        MemberDTO mDTO = memberService.getByCredentials(memberDTO.getUsername(), memberDTO.getPassword(), passwordEncoder);
+    public ResponseEntity<?> signin(@RequestBody MemberDTO memberDTO){
+        ResponseDTO responseDTO;
+        try{
+            MemberDTO mDTO = memberService.getByCredentials(memberDTO.getUsername(), memberDTO.getPassword());
+            if(mDTO != null){
+                final String AccessToken = tokenProvider.AccessTokenCreate(mDTO);
+                final String RefreshToken = tokenProvider.RefreshTokenCreate(mDTO);
+                memberService.saveRefreshToken(mDTO,RefreshToken);
+                final MemberDTO responseMemberDTO = MemberDTO.builder()
+                        .username(mDTO.getUsername())
+                        .id(mDTO.getId())
+                        .AccessToken(AccessToken)
+                        .RefreshToken(RefreshToken)
+                        .build();
+                return ResponseEntity.ok().body(responseMemberDTO);
+            }else{
+                responseDTO = ResponseDTO.builder()
+                        .error("User not found")
+                        .build();
+                return ResponseEntity.badRequest().body(responseDTO);
+            }
+        }catch(Exception e){
+            log.error("login failed for user: {}, error: {}", memberDTO.getUsername(), e.getMessage());
 
-        if(mDTO != null){
-            final String AccessToken = tokenProvider.AccessTokenCreate(mDTO);
-            final String RefreshToken = tokenProvider.RefreshTokenCreate(mDTO);
-            memberService.saveRefreshToken(mDTO,RefreshToken);
-            final MemberDTO responseMemberDTO = MemberDTO.builder()
-                    .username(mDTO.getUsername())
-                    .id(mDTO.getId())
-                    .AccessToken(AccessToken)
-                    .RefreshToken(RefreshToken)
-                    .build();
-            return ResponseEntity.ok().body(responseMemberDTO);
-        }else{
-            ResponseDTO responseDTO = ResponseDTO.builder()
-                    .error("Login failed.")
+            responseDTO = ResponseDTO.builder()
+                    .error("login failed.")
                     .build();
 
-            return ResponseEntity.badRequest().body(responseDTO);
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);        }
+    }
+
+    @PostMapping("/mypage")
+     public ResponseEntity<?> memberModify(@RequestHeader("Authorization") String token, @RequestBody MemberDTO memberDTO){
+        ResponseDTO responseDTO;
+        try{
+           memberService.modify(memberDTO);
+
+           return ResponseEntity.ok().build();
+        }catch(Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error("MemberModify failed.").build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
         }
     }
 
