@@ -21,12 +21,9 @@ public class MemberService {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
     private TokenProvider tokenProvider;
 
-    @Autowired
-    public void setTokenProvider(TokenProvider tokenProvider) {
-        this.tokenProvider = tokenProvider;
-    }
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -158,7 +155,6 @@ public class MemberService {
         Member member = getByUserId(Long.valueOf(memberId));
 
         if(member.getRefreshtoken().equals(refreshToken)){
-
             final TokenDTO token = TokenDTO.builder()
                     .AccessToken(tokenProvider.AccessTokenCreate(tokenProvider.extractIdByRefreshToken(refreshToken)))
                     .build();
@@ -166,7 +162,7 @@ public class MemberService {
             return token;
         }
 
-        throw new IllegalArgumentException("Invalid Refresh Token");
+        throw new RuntimeException("Invalid Refresh Token");
     }
 
 

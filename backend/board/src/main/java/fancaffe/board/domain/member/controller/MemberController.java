@@ -155,7 +155,7 @@ public class MemberController {
         {
             System.out.println("error processing");
             ResponseDTO responseDTO = ResponseDTO.builder()
-                    .error("AccessToken renew failed.")
+                    .error("refreshToken expired")
                     .build();
 
             return ResponseEntity.badRequest().body(responseDTO);

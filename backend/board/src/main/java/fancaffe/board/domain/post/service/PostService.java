@@ -27,7 +27,10 @@ public class PostService {
     @Autowired
     private TokenProvider tokenProvider;
 
+    @Autowired
     private final PostRepository postRepository;
+
+    @Autowired
     private final MemberRepository memberRepository;
 
     //게시글 읽기
@@ -92,7 +95,7 @@ public class PostService {
 
     // 게시글 상세정보 조회
     @Transactional
-    public PostResponse findPostById(final Long id) {
+    public PostResponse checkByPostId(final Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("post not found : " + id));
         post.setHits(post.getHits()+1);
         postRepository.save(post);
@@ -129,4 +132,8 @@ public class PostService {
     }
 
 
+    public Post getByPostId(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("post not found : " + postId));
+        return  post;
+    }
 }

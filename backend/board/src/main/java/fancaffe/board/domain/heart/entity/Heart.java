@@ -3,9 +3,11 @@ package fancaffe.board.domain.heart.entity;
 import fancaffe.board.domain.member.entity.Member;
 import fancaffe.board.domain.post.entity.Post;
 import jakarta.persistence.*;
+import lombok.Builder;
 
 @Table(name="HEART")
 @Entity
+@Builder
 public class Heart {
 
     @Id

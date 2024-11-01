@@ -61,7 +61,7 @@ public class PostApiController {
     }
 
     @GetMapping("/{category}")
-    public ResponseEntity<?> main_list(@PathVariable("category") String category,@RequestParam(value = "page1", defaultValue = "1") int pageid){
+    public ResponseEntity<?> main_list(@PathVariable("category") String category,@RequestParam(value = "page", defaultValue = "1") int pageid){
         try{
             List<PostResponse> paging = postService.getCategoryPosts(pageid-1, category);
             return ResponseEntity.ok().body(paging);
@@ -83,7 +83,8 @@ public class PostApiController {
 
         try{
             // 포스트 조회 서비스 호출
-            PostResponse postResponse = postService.findPostById(postId);
+            PostResponse postResponse = postService.
+                    checkByPostId(postId);
             // PostResponse 반환
             return ResponseEntity.ok(postResponse);
         }catch (Exception e){

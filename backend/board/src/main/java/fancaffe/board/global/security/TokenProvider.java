@@ -23,7 +23,7 @@ public class TokenProvider {
     public String AccessTokenCreate(String memberId) {
         Date expiryDate = Date.from(
                 Instant.now()
-                        .plus(15, ChronoUnit.SECONDS)
+                        .plus(15, ChronoUnit.HOURS)
         );
 
         return Jwts.builder()
