@@ -1,11 +1,16 @@
 package fancaffe.board.domain.post.controller;
 
 
+import fancaffe.board.domain.heart.service.HeartService;
+import fancaffe.board.domain.post.dto.PostDetailDTO;
+import fancaffe.board.domain.post.dto.PostListDTO;
 import fancaffe.board.domain.post.dto.PostRequest;
 import fancaffe.board.domain.post.dto.PostResponse;
 import fancaffe.board.domain.post.service.PostService;
 import fancaffe.board.global.dto.ResponseDTO;
+import fancaffe.board.global.security.TokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,14 +21,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostApiController {
 
-    private final PostService postService;
+    @Autowired
+    private  PostService postService;
+
+    @Autowired
+    private HeartService heartService;
+
+    @Autowired
+    private TokenProvider tokenProvider;
 
     @GetMapping("/")
     public ResponseEntity<?> best_list(){
         try{
-            List<PostResponse> paging = postService.getBestPost(0);
+            System.out.println("postapicontroller start");
+            List<PostListDTO> paging = postService.getBestPost(0);
             return ResponseEntity.ok().body(paging);
         }catch(Exception e){
+            System.out.println("here " + e.getMessage());
             ResponseDTO responseDTO = ResponseDTO.builder()
                     .error("best_list fail").build();
             return ResponseEntity
@@ -35,7 +49,7 @@ public class PostApiController {
     @GetMapping("/best")
     public ResponseEntity<?> best_list(@RequestParam(value = "page", defaultValue = "1") int pageid){
         try{
-            List<PostResponse> paging = postService.getBestPost(pageid-1);
+            List<PostListDTO> paging = postService.getBestPost(pageid-1);
             return ResponseEntity.ok().body(paging);
         }catch(Exception e){
             ResponseDTO responseDTO = ResponseDTO.builder()
@@ -49,7 +63,7 @@ public class PostApiController {
     @GetMapping("/new")
     public ResponseEntity<?> main_list(@RequestParam(value = "page", defaultValue = "1") int pageid){
         try{
-            List<PostResponse> paging = postService.getNewPosts(pageid-1);
+            List<PostListDTO> paging = postService.getNewPosts(pageid-1);
             return ResponseEntity.ok().body(paging);
         }catch(Exception e){
             ResponseDTO responseDTO = ResponseDTO.builder()
@@ -63,7 +77,7 @@ public class PostApiController {
     @GetMapping("/{category}")
     public ResponseEntity<?> main_list(@PathVariable("category") String category,@RequestParam(value = "page", defaultValue = "1") int pageid){
         try{
-            List<PostResponse> paging = postService.getCategoryPosts(pageid-1, category);
+            List<PostListDTO> paging = postService.getCategoryPosts(pageid-1, category);
             return ResponseEntity.ok().body(paging);
         }catch(Exception e){
             ResponseDTO responseDTO = ResponseDTO.builder()
@@ -76,20 +90,26 @@ public class PostApiController {
 
     //게시글 상세정보 조회
     @GetMapping("/{category}/{post_id}")
-    public ResponseEntity<?> getPostById(
+    public ResponseEntity<?> getPostById(@RequestHeader(value = "Authorization", required = false) String token,
             @PathVariable("category") String category,
             @PathVariable("post_id") Long postId,
             @RequestParam(value = "page", defaultValue = "1") int page) {
 
         try{
             // 포스트 조회 서비스 호출
-            PostResponse postResponse = postService.
+            PostDetailDTO postDetailDTO = postService.
                     checkByPostId(postId);
+
+            if(token!=null){
+                boolean heart_state = heartService.findByPostAndMember(postId, tokenProvider.extractIdByAccessToken(token));
+                postDetailDTO.setHeart(heart_state);
+            }
+
             // PostResponse 반환
-            return ResponseEntity.ok(postResponse);
+            return ResponseEntity.ok(postDetailDTO);
         }catch (Exception e){
             ResponseDTO responseDTO = ResponseDTO.builder()
-                    .error("main_list fail").build();
+                    .error(e.getMessage()).build();
             return ResponseEntity
                     .badRequest()
                     .body(responseDTO);
@@ -121,9 +141,9 @@ public class PostApiController {
                                     @PathVariable("post_id") Long postId
                                     ) {
         try{
-            PostResponse postResponse = postService.checkPostWriter(token ,postId);
+            boolean writer_check = postService.checkPostWriter(token ,postId);
 
-            return ResponseEntity.ok(postResponse);
+            return ResponseEntity.ok(writer_check);
         }catch (Exception e){
             ResponseDTO responseDTO = ResponseDTO.builder()
                     .error("checking fail").build();

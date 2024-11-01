@@ -33,11 +33,21 @@ public class Post extends BaseTimeEntity {
     private String contents;
 
     @Setter
-    @Column Long hits;
+    @Column
+    private Long hits;
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    @Setter
+    @Column(columnDefinition = "bigint default 0")
+    private Long countHeart = 0L; // 기본값으로 0으로 초기화
+
+    @Setter
+    @Column(columnDefinition = "bigint default 0")
+    private Long countComment = 0L; // 기본값으로 0으로 초기화
+
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Heart> hearts = new ArrayList<>(); // 좋아요 리스트

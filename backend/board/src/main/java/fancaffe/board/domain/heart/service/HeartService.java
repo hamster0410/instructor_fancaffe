@@ -21,6 +21,7 @@ public class HeartService {
     @Autowired
     private MemberService memberService;
 
+
     @Autowired
     private PostService postService;
 
@@ -28,10 +29,13 @@ public class HeartService {
     private HeartRepository heartRepository;
 
     public void addHeart(String token, Long postId) {
+        //member 찾기
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member member = memberService.getByUserId(Long.valueOf(userId));
 
+        //post 찾기
         Post post = postService.getByPostId(postId);
+        postService.increaseHeart(post);
 
         Heart heart = Heart.builder()
                 .member(member)
@@ -42,16 +46,17 @@ public class HeartService {
     }
 
     public void deleteHeart(String token, Long postId) {
+        System.out.println("[HeartService] deleteHeart");
+        //member 찾기
         String userId = tokenProvider.extractIdByAccessToken(token);
-        Member member = memberService.getByUserId(Long.valueOf(userId));
 
-        Post post = postService.getByPostId(postId);
-
-        Heart heart = Heart.builder()
-                .member(member)
-                .post(post)
-                .build();
+        Heart heart = heartRepository.findByMemberIdAndPostId(postId, Long.valueOf(userId));
 
         heartRepository.delete(heart);
+    }
+
+    public boolean findByPostAndMember(Long postId, String userId) {
+        Heart heart = heartRepository.findByMemberIdAndPostId(postId, Long.valueOf(userId));
+        return heart != null;
     }
 }

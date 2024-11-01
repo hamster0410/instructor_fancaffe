@@ -1,8 +1,12 @@
 package fancaffe.board.domain.post.service;
 
 
+import fancaffe.board.domain.heart.service.HeartService;
 import fancaffe.board.domain.member.entity.Member;
 import fancaffe.board.domain.member.repository.MemberRepository;
+import fancaffe.board.domain.member.service.MemberService;
+import fancaffe.board.domain.post.dto.PostDetailDTO;
+import fancaffe.board.domain.post.dto.PostListDTO;
 import fancaffe.board.domain.post.dto.PostRequest;
 import fancaffe.board.domain.post.dto.PostResponse;
 import fancaffe.board.domain.post.entity.Post;
@@ -17,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +37,7 @@ public class PostService {
     private final PostRepository postRepository;
 
     @Autowired
-    private final MemberRepository memberRepository;
+    private MemberService memberService;
 
     //게시글 읽기
     @Transactional(readOnly = true)
@@ -46,33 +52,36 @@ public class PostService {
     }
     //인기게시글 읽기
     @Transactional(readOnly = true)
-    public List<PostResponse> getBestPost(int page) {
+    public List<PostListDTO> getBestPost(int page) {
         Pageable pageable = (Pageable) PageRequest.of(page,10);
         Page<Post> postPage = this.postRepository.findAllByOrderByHitsDesc(pageable);  // Post 페이지 가져오기
-        // Post를 PostResponse로 변환
+        // Post를 PostListDTO 변환
+        List<PostListDTO> postListDTOList = new ArrayList<>();
         return postPage.getContent().stream()
-                .map(PostResponse::new)
+                .map(PostListDTO::new)
                 .collect(Collectors.toList());
+
     }
 
     @Transactional(readOnly = true)
-    public List<PostResponse> getNewPosts(int page) {
+    public List<PostListDTO> getNewPosts(int page) {
         Pageable pageable = (Pageable) PageRequest.of(page,10);
         Page<Post> postPage = this.postRepository.findAllByOrderByCreatedDateDesc(pageable);  // Post 페이지 가져오기
 
-        // Post를 PostResponse로 변환
+//         Post를 PostResponse로 변환
         return postPage.getContent().stream()
-                .map(PostResponse::new)
+                .map(PostListDTO::new)
                 .collect(Collectors.toList());
+
     }
 
     @Transactional(readOnly = true)
-    public List<PostResponse> getCategoryPosts(int page, String category) {
+    public List<PostListDTO> getCategoryPosts(int page, String category) {
         Pageable pageable = (Pageable) PageRequest.of(page,10);
         Page<Post> postPage = this.postRepository.findByCategory(pageable,category);
         // Post를 PostResponse로 변환
         return postPage.getContent().stream()
-                .map(PostResponse::new)
+                .map(PostListDTO::new)
                 .collect(Collectors.toList());
     }
 
@@ -80,8 +89,8 @@ public class PostService {
     @Transactional
     public PostResponse savePost(final PostRequest params, String token) {
         String userId = tokenProvider.extractIdByAccessToken(token);
-        Member member = memberRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new EntityNotFoundException("Member not found with id: " + userId));
+        Member member = memberService.getByUserId(Long.valueOf(userId));
+
         Post post = Post.builder()
                 .title(params.getTitle())
                 .member(member)
@@ -95,21 +104,24 @@ public class PostService {
 
     // 게시글 상세정보 조회
     @Transactional
-    public PostResponse checkByPostId(final Long id) {
+    public PostDetailDTO checkByPostId(final Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("post not found : " + id));
+
+        //조회수 증가 로직
         post.setHits(post.getHits()+1);
         postRepository.save(post);
-        return post.toDto();
+
+        return new PostDetailDTO(post);
     }
 
     //현재 접속한 사람이 게시글을 작성한 사람인지 확인
-    public PostResponse checkPostWriter(String token,  Long postId) {
+    public boolean checkPostWriter(String token,  Long postId) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("post not found : " + postId));
         if(String.valueOf(post.getMember().getId()).equals(userId)){
-           return post.toDto();
+           return true;
         }else{
-            return null;
+            return false;
         }
     }
 
@@ -135,5 +147,16 @@ public class PostService {
     public Post getByPostId(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("post not found : " + postId));
         return  post;
+    }
+
+    public void increaseHeart(Post post) {
+        post.setCountHeart(post.getCountHeart() + 1);
+        postRepository.save(post);
+    }
+
+
+    public void decreaseHeart(Post post) {
+        post.setCountHeart(post.getCountHeart() - 1);
+        postRepository.save(post);
     }
 }
