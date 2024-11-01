@@ -93,42 +93,6 @@ public class MemberController {
                     .body(responseDTO);        }
     }
 
-    @GetMapping("/mypage")
-    public ResponseEntity<?> memberInfo(@RequestHeader("Authorization") String token){
-         try{
-            MemberDTO memberDto = memberService.getByToken(token);
-            return ResponseEntity.ok().body(memberDto);
-        }catch (Exception e){
-             log.error("mypage failed  error: {}", e.getMessage());
-
-             ResponseDTO responseDTO = ResponseDTO.builder()
-                     .error("mypage failed.")
-                     .build();
-
-             return ResponseEntity
-                     .badRequest()
-                     .body(responseDTO);
-        }
-    }
-
-    @PostMapping("/mypage")
-     public ResponseEntity<?> memberModify(@RequestHeader("Authorization") String token, @RequestBody MemberDTO memberDTO){
-        ResponseDTO responseDTO;
-        try{
-           memberService.modify(memberDTO, token);
-           responseDTO = ResponseDTO.builder().message("modify success").build();
-           return ResponseEntity.ok().body(responseDTO);
-
-        }catch(Exception e){
-            responseDTO = ResponseDTO.builder()
-                    .error(e.getMessage()).build();
-            return ResponseEntity
-                    .badRequest()
-                    .body(responseDTO);
-        }
-    }
-
-
     @DeleteMapping("/delete")
     public ResponseEntity<?> memberDelete(@RequestHeader("Authorization") String token){
         ResponseDTO responseDTO;
