@@ -15,8 +15,8 @@ public class HeartController {
     @Autowired
     HeartService heartService;
 
-    @GetMapping("/add")
-    public ResponseEntity<?> heartAdd(@RequestHeader("Authorization") String token,@RequestParam(value = "postId")Long postId){
+    @GetMapping("/add/{postId}")
+    public ResponseEntity<?> heartAdd(@RequestHeader("Authorization") String token,@PathVariable("postId") Long postId){
         ResponseDTO responseDTO;
         String message;
         try {
@@ -34,8 +34,8 @@ public class HeartController {
         }
     }
 
-    @GetMapping("/delete")
-    public ResponseEntity<?> heartDelete(@RequestHeader("Authorization") String token,@RequestParam(value = "postId")Long postId){
+    @GetMapping("/delete/{postId}")
+    public ResponseEntity<?> heartDelete(@RequestHeader("Authorization") String token,@PathVariable("postId")Long postId){
         ResponseDTO responseDTO;
         String message;
         try {

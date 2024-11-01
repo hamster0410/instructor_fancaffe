@@ -41,11 +41,11 @@ public class Post extends BaseTimeEntity {
     private Member member;
 
     @Setter
-    @Column(columnDefinition = "bigint default 0")
+    @Column
     private Long countHeart = 0L; // 기본값으로 0으로 초기화
 
     @Setter
-    @Column(columnDefinition = "bigint default 0")
+    @Column
     private Long countComment = 0L; // 기본값으로 0으로 초기화
 
 
@@ -67,6 +67,8 @@ public class Post extends BaseTimeEntity {
         this.member = member;
         this.category = category;
         this.hits = hits;
+        this.countComment = 0L;
+        this.countHeart = 0L;
     }
 
     public PostResponse toDto() {

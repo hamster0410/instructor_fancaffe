@@ -35,6 +35,7 @@ public class HeartService {
 
         //post 찾기
         Post post = postService.getByPostId(postId);
+
         postService.increaseHeart(post);
 
         Heart heart = Heart.builder()
@@ -49,6 +50,12 @@ public class HeartService {
         System.out.println("[HeartService] deleteHeart");
         //member 찾기
         String userId = tokenProvider.extractIdByAccessToken(token);
+
+        //post 찾기
+        Post post = postService.getByPostId(postId);
+
+        postService.decreaseHeart(post);
+
 
         Heart heart = heartRepository.findByMemberIdAndPostId(postId, Long.valueOf(userId));
 
