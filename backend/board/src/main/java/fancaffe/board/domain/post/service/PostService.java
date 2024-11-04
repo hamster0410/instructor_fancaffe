@@ -1,18 +1,15 @@
 package fancaffe.board.domain.post.service;
 
 
-import fancaffe.board.domain.heart.service.HeartService;
 import fancaffe.board.domain.member.entity.Member;
-import fancaffe.board.domain.member.repository.MemberRepository;
 import fancaffe.board.domain.member.service.MemberService;
 import fancaffe.board.domain.post.dto.PostDetailDTO;
 import fancaffe.board.domain.post.dto.PostListDTO;
 import fancaffe.board.domain.post.dto.PostRequest;
-import fancaffe.board.domain.post.dto.PostResponse;
+import fancaffe.board.domain.post.dto.PostSaveDTO;
 import fancaffe.board.domain.post.entity.Post;
 import fancaffe.board.domain.post.repository.PostRepository;
 import fancaffe.board.global.security.TokenProvider;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,17 +35,7 @@ public class PostService {
     @Autowired
     private MemberService memberService;
 
-    //게시글 읽기
-    @Transactional(readOnly = true)
-    public List<PostResponse> getPosts(int page){
-        Pageable pageable = (Pageable) PageRequest.of(page,10);
-        Page<Post> postPage = this.postRepository.findAll(pageable);  // Post 페이지 가져오기
 
-        // Post를 PostResponse로 변환
-        return postPage.getContent().stream()
-                .map(PostResponse::new)
-                .collect(Collectors.toList());
-    }
     //인기게시글 읽기
     @Transactional(readOnly = true)
     public List<PostListDTO> getBestPost(int page) {
@@ -87,7 +73,7 @@ public class PostService {
 
     // 게시글 저장
     @Transactional
-    public PostResponse savePost(final PostRequest params, String token) {
+    public PostSaveDTO savePost(final PostRequest params, String token) {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member member = memberService.getByUserId(Long.valueOf(userId));
 
@@ -126,7 +112,7 @@ public class PostService {
     }
 
     //게시글 수정
-    public PostResponse updatePost(String token, Long postId, PostRequest params) {
+    public PostSaveDTO updatePost(String token, Long postId, PostRequest params) {
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("post not found : " + postId));
         post.setTitle(params.getTitle());
@@ -158,5 +144,9 @@ public class PostService {
     public void decreaseHeart(Post post) {
         post.setCountHeart(post.getCountHeart() - 1);
         postRepository.save(post);
+    }
+
+    public Long getPostCount() {
+        return postRepository.count();
     }
 }

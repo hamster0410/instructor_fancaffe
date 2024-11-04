@@ -13,7 +13,7 @@ import java.util.List;
 public class CommentService {
 
 
-    public List<Comment> getComments(Long postId) {
-        Pageable pageable = (Pageable) PageRequest.of(page,10);
-    }
+//    public List<Comment> getComments(Long postId) {
+//        Pageable pageable = (Pageable) PageRequest.of(page,10);
+//    }
 }

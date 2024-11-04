@@ -2,10 +2,7 @@ package fancaffe.board.domain.post.controller;
 
 
 import fancaffe.board.domain.heart.service.HeartService;
-import fancaffe.board.domain.post.dto.PostDetailDTO;
-import fancaffe.board.domain.post.dto.PostListDTO;
-import fancaffe.board.domain.post.dto.PostRequest;
-import fancaffe.board.domain.post.dto.PostResponse;
+import fancaffe.board.domain.post.dto.*;
 import fancaffe.board.domain.post.service.PostService;
 import fancaffe.board.global.dto.ResponseDTO;
 import fancaffe.board.global.security.TokenProvider;
@@ -30,14 +27,19 @@ public class PostApiController {
     @Autowired
     private TokenProvider tokenProvider;
 
-    @GetMapping("/")
-    public ResponseEntity<?> best_list(){
-        try{
+    @GetMapping({"/", "/best"})
+    public ResponseEntity<?> bestList(@RequestParam(value = "page", defaultValue = "1") int pageId) {
+        try {
             System.out.println("postapicontroller start");
-            List<PostListDTO> paging = postService.getBestPost(0);
-            return ResponseEntity.ok().body(paging);
-        }catch(Exception e){
-            System.out.println("here " + e.getMessage());
+            List<PostListDTO> paging = postService.getBestPost(pageId - 1);
+            Long postCount = postService.getPostCount();
+            PostResponseDTO postResponseDTO = PostResponseDTO
+                    .builder()
+                    .posts(paging)
+                    .totalCount(postCount)
+                    .build();
+            return ResponseEntity.ok().body(postResponseDTO);
+        } catch (Exception e) {
             ResponseDTO responseDTO = ResponseDTO.builder()
                     .error("best_list fail").build();
             return ResponseEntity
@@ -46,25 +48,18 @@ public class PostApiController {
         }
     }
 
-    @GetMapping("/best")
-    public ResponseEntity<?> best_list(@RequestParam(value = "page", defaultValue = "1") int pageid){
-        try{
-            List<PostListDTO> paging = postService.getBestPost(pageid-1);
-            return ResponseEntity.ok().body(paging);
-        }catch(Exception e){
-            ResponseDTO responseDTO = ResponseDTO.builder()
-                    .error("best_list fail").build();
-            return ResponseEntity
-                    .badRequest()
-                    .body(responseDTO);
-        }
-    }
 
     @GetMapping("/new")
     public ResponseEntity<?> main_list(@RequestParam(value = "page", defaultValue = "1") int pageid){
         try{
             List<PostListDTO> paging = postService.getNewPosts(pageid-1);
-            return ResponseEntity.ok().body(paging);
+            Long postCount = postService.getPostCount();
+            PostResponseDTO postResponseDTO = PostResponseDTO
+                    .builder()
+                    .posts(paging)
+                    .totalCount(postCount)
+                    .build();
+            return ResponseEntity.ok().body(postResponseDTO);
         }catch(Exception e){
             ResponseDTO responseDTO = ResponseDTO.builder()
                     .error("main_list fail").build();
@@ -78,7 +73,13 @@ public class PostApiController {
     public ResponseEntity<?> main_list(@PathVariable("category") String category,@RequestParam(value = "page", defaultValue = "1") int pageid){
         try{
             List<PostListDTO> paging = postService.getCategoryPosts(pageid-1, category);
-            return ResponseEntity.ok().body(paging);
+            Long postCount = postService.getPostCount();
+            PostResponseDTO postResponseDTO = PostResponseDTO
+                    .builder()
+                    .posts(paging)
+                    .totalCount(postCount)
+                    .build();
+            return ResponseEntity.ok().body(postResponseDTO);
         }catch(Exception e){
             ResponseDTO responseDTO = ResponseDTO.builder()
                     .error("main_list fail").build();
@@ -121,9 +122,9 @@ public class PostApiController {
     public ResponseEntity<?> savePost( @RequestHeader("Authorization") String token, @RequestBody final PostRequest params) {
 
         try{
-            PostResponse postResponse = postService.savePost(params,token);
+            PostSaveDTO postSaveDTO = postService.savePost(params,token);
 
-            return ResponseEntity.ok(postResponse);
+            return ResponseEntity.ok(postSaveDTO);
         }catch (Exception e){
             ResponseDTO responseDTO = ResponseDTO.builder()
                     .error("save fail").build();
@@ -161,9 +162,9 @@ public class PostApiController {
                                            @RequestBody final PostRequest params
     ) {
         try{
-            PostResponse postResponse = postService.updatePost(token ,postId, params);
+            PostSaveDTO postSaveDTO = postService.updatePost(token ,postId, params);
 
-            return ResponseEntity.ok(postResponse);
+            return ResponseEntity.ok(postSaveDTO);
         }catch(Exception e){
             ResponseDTO responseDTO = ResponseDTO.builder()
                     .error("editing fail").build();

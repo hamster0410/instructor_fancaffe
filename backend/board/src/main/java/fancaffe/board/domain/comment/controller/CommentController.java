@@ -16,15 +16,16 @@ public class CommentController {
     @Autowired
     CommentService commentService;
 
-    @GetMapping("/get/{postId}")
-    public ResponseEntity<?> getPostComment(@PathVariable("category") Long postId){
-        ResponseDTO responseDTO;
-        try{
-            List<Comment> comments = commentService.getComments(postId);
-        }catch (Exception e){
-
-        }
-    }
+//    @GetMapping("/get/{postId}")
+//    public ResponseEntity<?> getPostComment(@PathVariable("category") Long postId){
+//        ResponseDTO responseDTO;
+//
+//        try{
+//            List<Comment> comments = commentService.getComments(postId);
+//        }catch (Exception e){
+//
+//        }
+//    }
 
 
 }

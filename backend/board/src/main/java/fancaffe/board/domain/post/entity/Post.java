@@ -5,7 +5,7 @@ import fancaffe.board.domain.BaseTimeEntity;
 import fancaffe.board.domain.comment.entity.Comment;
 import fancaffe.board.domain.heart.entity.Heart;
 import fancaffe.board.domain.member.entity.Member;
-import fancaffe.board.domain.post.dto.PostResponse;
+import fancaffe.board.domain.post.dto.PostSaveDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -71,8 +71,8 @@ public class Post extends BaseTimeEntity {
         this.countHeart = 0L;
     }
 
-    public PostResponse toDto() {
-        return new PostResponse(this);
+    public PostSaveDTO toDto() {
+        return new PostSaveDTO(this);
     }
 
 }
