@@ -128,7 +128,7 @@ public class CommentService {
                 imageFile.transferTo(destinationFile);
 
                 // 이미지 URL 설정 (예: http://localhost:8080/images/파일명)
-                System.out.println("unique filename" + uniqueFileName);
+                System.out.println("unique filename" + uniqueFileName + imageFile.getContentType());
                 returnFiles.add(uniqueFileName);
             }
         }
