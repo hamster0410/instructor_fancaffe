@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,7 +16,7 @@ public class CommentDTO {
     private String nickname; // 댓글을 단 사용자
     private CommentDTO parent; // 대댓글의 부모 댓글을 DTO로 표현
     private LocalDateTime createdDate;
-    private String imageUrl;
+    private List<String> imageUrl;
 
 
     // 기본 생성자 추가

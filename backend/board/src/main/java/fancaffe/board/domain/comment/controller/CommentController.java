@@ -42,15 +42,18 @@ public class CommentController {
         }
     }
 
-    @PostMapping("/create/{postId}")
-    public ResponseEntity<?> createComment(@RequestHeader("Authorization") String token ,
-                                           @PathVariable("postId") Long postId,
-                                           @RequestBody RequestCommentDTO requestCommentDTO,
-                                           @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
+    @PostMapping(value = "/create/{postId}", consumes = "multipart/form-data")
+    public ResponseEntity<?> createComment(
+            @RequestHeader("Authorization") String token,
+            @PathVariable("postId") Long postId,
+            @RequestPart("commentData") RequestCommentDTO requestCommentDTO,
+            @RequestPart(value = "imageFile", required = false) List<MultipartFile> imageFiles) {
+        // 요청 처리 로직
         ResponseDTO responseDTO;
-        // 댓글 생성 로직
+
+         // 댓글 생성 로직
         try{
-             commentService.saveCommentWithImage(token,postId,requestCommentDTO,imageFile);
+             commentService.createComment(token,postId,requestCommentDTO,imageFiles);
              responseDTO =ResponseDTO.builder()
                      .message("comment success")
                      .build();
@@ -65,11 +68,14 @@ public class CommentController {
 
     }
 
-    @PutMapping("/update/{commentId}")
+    @PutMapping(value = "/update/{commentId}", consumes = "multipart/form-data")
     public ResponseEntity<?> updateComment(@RequestHeader("Authorization") String token ,
-                                           @PathVariable("commentId") Long commentId, @RequestBody CommentDTO commentDTO) {
+                                           @PathVariable("commentId") Long commentId,
+                                           @RequestPart("commentData") RequestCommentDTO requestCommentDTO,
+                                           @RequestPart(value = "imageFile", required = false) List<MultipartFile> imageFiles)
+    {
         try{
-            CommentDTO commentReturnDTO = commentService.updateComment(token,commentId,commentDTO);
+            CommentDTO commentReturnDTO = commentService.updateComment(token,commentId,requestCommentDTO, imageFiles);
 
             return ResponseEntity.ok(commentReturnDTO);
         }catch(Exception e){

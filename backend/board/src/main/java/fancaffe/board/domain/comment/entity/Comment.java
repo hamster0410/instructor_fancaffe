@@ -42,7 +42,8 @@ public class Comment extends BaseTimeEntity {
     private Comment parent; // 대댓글의 부모 댓글
 
     @Setter
-    private String imageUrl;
+    @Column(columnDefinition = "TEXT") // TEXT 타입으로 설정
+    private List<String> imageUrl;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference // 직렬화의 시작점에 추가

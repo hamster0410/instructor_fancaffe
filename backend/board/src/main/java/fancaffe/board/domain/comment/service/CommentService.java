@@ -19,10 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,24 +56,14 @@ public class CommentService {
         return commentRepository.countByPostId(postId);
     }
 
-    public Comment saveCommentWithImage(String token, Long postId, RequestCommentDTO requestCommentDTO, MultipartFile imageFile) throws IOException {
-        String imageUrl = null;
-
-        if (imageFile != null && !imageFile.isEmpty()) {
-            // 고유한 파일 이름 생성
-            String uniqueFileName = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
-            File destinationFile = new File(uploadDir + File.separator + uniqueFileName);
-
-            // 파일 시스템에 이미지 파일 저장
-            imageFile.transferTo(destinationFile);
-
-            // 이미지 URL 설정 (예: http://localhost:8080/images/파일명)
-            imageUrl = uniqueFileName;
-        }
+    public void createComment(String token, Long postId, RequestCommentDTO requestCommentDTO, List<MultipartFile> imageFiles) throws IOException {
 
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member member = memberService.getByUserId(Long.valueOf(userId));
         Post post = postService.getByPostId(postId);
+
+        //image 저장
+        List<String> imageUrl = saveImage(imageFiles,userId);
 
         Comment parent_comment;
         if(requestCommentDTO.getParentId() != null){
@@ -95,18 +82,20 @@ public class CommentService {
                 .build();
 
 
-        return commentRepository.save(comment);
+        commentRepository.save(comment);
     }
 
-    public CommentDTO updateComment(String token, Long commentId, CommentDTO commentDTO) {
-        Long userId = Long.valueOf(tokenProvider.extractIdByAccessToken(token));
+    public CommentDTO updateComment(String token, Long commentId, RequestCommentDTO commentDTO, List<MultipartFile> imageFiles) throws IOException {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Long UID = Long.valueOf(userId);
         Optional<Comment> comment = commentRepository.findById(commentId);
+        List<String> imageUrl = saveImage(imageFiles,userId);
 
         //코멘트가 존재하고 사용자가 쓴 글이 맞으면
-        if(comment.isPresent() && userId.equals(comment.get().getMember().getId())){
+        if(comment.isPresent() && UID.equals(comment.get().getMember().getId())){
 
             comment.get().setContent(commentDTO.getContent());
-            comment.get().setImageUrl(commentDTO.getImageUrl());
+            comment.get().setImageUrl(imageUrl);
             commentRepository.save(comment.get());
 
             return new CommentDTO(comment.get());
@@ -124,5 +113,25 @@ public class CommentService {
             throw new IllegalArgumentException("comment is not present");
         }
 
+    }
+
+    public List<String> saveImage(List<MultipartFile> imageFiles,String userId) throws IOException {
+        List<String> returnFiles = new ArrayList<>();
+        Date date = new Date();
+        for(MultipartFile imageFile : imageFiles){
+            if (imageFile != null && !imageFile.isEmpty()) {
+                // 고유한 파일 이름 생성
+                String uniqueFileName =  userId + "_" + date.getDate()+imageFile.getOriginalFilename();
+                File destinationFile = new File(uploadDir + File.separator + uniqueFileName);
+
+                // 파일 시스템에 이미지 파일 저장
+                imageFile.transferTo(destinationFile);
+
+                // 이미지 URL 설정 (예: http://localhost:8080/images/파일명)
+                System.out.println("unique filename" + uniqueFileName);
+                returnFiles.add(uniqueFileName);
+            }
+        }
+        return  returnFiles;
     }
 }
