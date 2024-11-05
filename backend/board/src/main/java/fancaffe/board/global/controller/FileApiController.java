@@ -21,15 +21,44 @@ public class FileApiController {
     @Value("${file.upload-dir-post}")  // 파일 저장 경로를 application.properties에 설정
     private String postUploadDir;
 
-    //    @GetMapping("/post")
-//    public byte[] printImagePost(){
-//
-//    }
-    @GetMapping(value = "/comment", produces = { MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
+
+    @GetMapping(value = "/post", produces = { MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
     public ResponseEntity<byte[]> printImagePost(@RequestParam(value="filename") final String filename) {
         // 업로드된 파일의 전체 경로
+        String fileFullPath = Paths.get(postUploadDir, filename).toString();
+
+        // 파일 객체 생성
+        File uploadedFile = new File(fileFullPath);
+
+        // 파일 존재 여부 확인
+        if (!uploadedFile.exists()) {
+            System.out.println("file not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("File not found".getBytes());
+        }
+
+        try {
+            // 이미지 파일을 byte[]로 변환 후 반환
+            byte[] imageBytes = Files.readAllBytes(uploadedFile.toPath());
+
+            // 파일의 MediaType 설정
+            MediaType mediaType = getMediaTypeForFileName(filename);
+
+            return ResponseEntity.ok()
+                    .contentType(mediaType)
+                    .body(imageBytes);
+
+        } catch (IOException e) {
+            // 예외 발생 시 Internal Server Error와 함께 메시지 반환
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error reading file".getBytes());
+        }
+    }
+    @GetMapping(value = "/comment", produces = { MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
+    public ResponseEntity<byte[]> printImageComment(@RequestParam(value="filename") final String filename) {
+        // 업로드된 파일의 전체 경로
         String fileFullPath = Paths.get(commentUploadDir, filename).toString();
-        System.out.println(fileFullPath);
+
 
         // 파일 객체 생성
         File uploadedFile = new File(fileFullPath);

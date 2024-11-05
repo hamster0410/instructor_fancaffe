@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -98,8 +99,7 @@ public class PostApiController {
 
         try{
             // 포스트 조회 서비스 호출
-            PostDetailDTO postDetailDTO = postService.
-                    checkByPostId(postId);
+            PostDetailDTO postDetailDTO = postService.checkByPostId(postId);
 
             if(token!=null){
                 boolean heart_state = heartService.findByPostAndMember(postId, tokenProvider.extractIdByAccessToken(token));
@@ -119,10 +119,12 @@ public class PostApiController {
 
     // 게시글 저장
     @PostMapping("/post/write")
-    public ResponseEntity<?> savePost( @RequestHeader("Authorization") String token, @RequestBody final PostRequest params) {
+    public ResponseEntity<?> savePost( @RequestHeader("Authorization") String token,
+                                       @RequestPart(value = "postData") final PostRequest params,
+                                       @RequestPart(value = "imageFile", required = false) List<MultipartFile> imageFiles) {
 
         try{
-            PostSaveDTO postSaveDTO = postService.savePost(params,token);
+            PostSaveDTO postSaveDTO = postService.savePost(params,token,imageFiles);
 
             return ResponseEntity.ok(postSaveDTO);
         }catch (Exception e){
@@ -159,10 +161,11 @@ public class PostApiController {
     public ResponseEntity<?> postEditSave( @RequestHeader("Authorization") String token,
                                            @PathVariable("category") String category,
                                            @PathVariable("post_id") Long postId,
-                                           @RequestBody final PostRequest params
+                                           @RequestPart("postData") final PostRequest params,
+                                           @RequestPart(value = "imageFile", required = false) List<MultipartFile> imageFiles
     ) {
         try{
-            PostSaveDTO postSaveDTO = postService.updatePost(token ,postId, params);
+            PostSaveDTO postSaveDTO = postService.updatePost(token ,postId, params, imageFiles);
 
             return ResponseEntity.ok(postSaveDTO);
         }catch(Exception e){

@@ -41,6 +41,9 @@ public class Post extends BaseTimeEntity {
     private Member member;
 
     @Setter
+    private List<String> imageUrl;
+
+    @Setter
     @Column
     private Long countHeart = 0L; // 기본값으로 0으로 초기화
 
@@ -61,12 +64,13 @@ public class Post extends BaseTimeEntity {
 
 
     @Builder
-    public Post(String title, String contents, Member member,String category,Long hits){
+    public Post(String title, String contents, Member member,String category,Long hits,List<String> imageUrl){
         this.title = title;
         this.contents = contents;
         this.member = member;
         this.category = category;
         this.hits = hits;
+        this.imageUrl = imageUrl;
         this.countComment = 0L;
         this.countHeart = 0L;
     }

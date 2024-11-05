@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,6 +16,7 @@ public class PostDetailDTO {
     private String contents;
     private Long hits;
     private String category;
+    private List<String> imageUrl;
     private LocalDateTime createdDate;
     private Long count_comment;
     private Long count_heart;
@@ -27,6 +29,7 @@ public class PostDetailDTO {
         this.contents = post.getContents();
         this.hits = post.getHits();
         this.category = post.getCategory();
+        this.imageUrl = post.getImageUrl();
         this.createdDate = post.getCreatedDate();
         this.count_heart = post.getCountHeart();
         this.count_comment = post.getCountComment();

@@ -40,6 +40,7 @@ public class CommentService {
     @Autowired
     private PostService postService;
 
+
     public List<CommentDTO> getCommentsByPostId(Long postId, int page) {
         // 페이지 크기를 10으로 지정
         Pageable pageable = PageRequest.of(page, 10);
@@ -81,7 +82,7 @@ public class CommentService {
                 .member(member)
                 .build();
 
-
+        postService.increaseComment(post);
         commentRepository.save(comment);
     }
 
@@ -107,6 +108,10 @@ public class CommentService {
     public void deleteComment(String token, Long commentId) {
         Long userId = Long.valueOf(tokenProvider.extractIdByAccessToken(token));
         Optional<Comment> comment = commentRepository.findById(commentId);
+
+        Post post = comment.get().getPost();
+        postService.decreaseComment(post);
+
         if(comment.isPresent() && userId.equals(comment.get().getMember().getId())){
             commentRepository.delete(comment.get());
         }else{
@@ -121,7 +126,7 @@ public class CommentService {
         for(MultipartFile imageFile : imageFiles){
             if (imageFile != null && !imageFile.isEmpty()) {
                 // 고유한 파일 이름 생성
-                String uniqueFileName =  userId + "_" + date.getDate()+imageFile.getOriginalFilename();
+                String uniqueFileName =  userId + "_" + date.getDate() + "_" + imageFile.getOriginalFilename();
                 File destinationFile = new File(uploadDir + File.separator + uniqueFileName);
 
                 // 파일 시스템에 이미지 파일 저장

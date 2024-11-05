@@ -48,7 +48,7 @@ public class CommentController {
             @PathVariable("postId") Long postId,
             @RequestPart("commentData") RequestCommentDTO requestCommentDTO,
             @RequestPart(value = "imageFile", required = false) List<MultipartFile> imageFiles) {
-        // 요청 처리 로직
+
         ResponseDTO responseDTO;
 
          // 댓글 생성 로직
