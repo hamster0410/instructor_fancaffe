@@ -1,14 +1,13 @@
 package fancaffe.board.domain.comment.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import fancaffe.board.domain.BaseTimeEntity;
 import fancaffe.board.domain.member.entity.Member;
 import fancaffe.board.domain.post.entity.Post;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Builder
 public class Comment extends BaseTimeEntity {
 
     @Id
@@ -25,6 +25,7 @@ public class Comment extends BaseTimeEntity {
     private Long id;
 
     @Lob
+    @Setter
     private String content; // 댓글 내용
 
     @ManyToOne
@@ -36,10 +37,15 @@ public class Comment extends BaseTimeEntity {
     private Member member; // 댓글을 단 사용자
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "parent_id")
     private Comment parent; // 대댓글의 부모 댓글
 
+    @Setter
+    private String imageUrl;
+
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference // 직렬화의 시작점에 추가
     private List<Comment> comments = new ArrayList<>(); // 대댓글 리스트
 
 }
