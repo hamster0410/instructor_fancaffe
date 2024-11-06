@@ -3,7 +3,7 @@ package fancaffe.board.domain.comment.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import fancaffe.board.domain.BaseTimeEntity;
+import fancaffe.board.global.dto.BaseTimeEntity;
 import fancaffe.board.domain.member.entity.Member;
 import fancaffe.board.domain.post.entity.Post;
 import jakarta.persistence.*;

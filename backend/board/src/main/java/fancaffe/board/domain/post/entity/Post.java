@@ -1,6 +1,6 @@
 package fancaffe.board.domain.post.entity;
 
-import fancaffe.board.domain.BaseTimeEntity;
+import fancaffe.board.global.dto.BaseTimeEntity;
 
 import fancaffe.board.domain.comment.entity.Comment;
 import fancaffe.board.domain.heart.entity.Heart;

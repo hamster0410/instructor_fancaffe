@@ -90,6 +90,24 @@ public class PostApiController {
         }
     }
 
+    //게시글 검색
+    @GetMapping("/search/{about}")
+    public ResponseEntity<?> postSearch(@PathVariable("about") String about,
+                                        @RequestParam("keyword") String keyword,
+                                        @RequestParam(value = "page", defaultValue = "1") int pageid){
+        ResponseDTO responseDTO;
+        try{
+            System.out.println(about + " " + keyword + " " + pageid + " here ");
+            PostResponseDTO postResponseDTO = postService.getSearchPost(about, keyword, pageid-1);
+            return ResponseEntity.ok().body(postResponseDTO);
+        }catch(Exception e){
+            responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
     //게시글 상세정보 조회
     @GetMapping("/{category}/{post_id}")
     public ResponseEntity<?> getPostById(@RequestHeader(value = "Authorization", required = false) String token,
@@ -198,5 +216,8 @@ public class PostApiController {
                     .body(responseDTO);
         }
     }
+
+
+
 }
 

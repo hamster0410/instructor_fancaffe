@@ -3,10 +3,7 @@ package fancaffe.board.domain.post.service;
 
 import fancaffe.board.domain.member.entity.Member;
 import fancaffe.board.domain.member.service.MemberService;
-import fancaffe.board.domain.post.dto.PostDetailDTO;
-import fancaffe.board.domain.post.dto.PostListDTO;
-import fancaffe.board.domain.post.dto.PostRequest;
-import fancaffe.board.domain.post.dto.PostSaveDTO;
+import fancaffe.board.domain.post.dto.*;
 import fancaffe.board.domain.post.entity.Post;
 import fancaffe.board.domain.post.repository.PostRepository;
 import fancaffe.board.global.security.TokenProvider;
@@ -77,6 +74,31 @@ public class PostService {
         return postPage.getContent().stream()
                 .map(PostListDTO::new)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public PostResponseDTO getSearchPost(String about, String keyword, int page) {
+        Pageable pageable = (Pageable) PageRequest.of(page,10);
+        Page<Post> postPage = switch (about) {
+            case "title" -> this.postRepository.findByTitleContaining(pageable, keyword);
+            case "contents" -> this.postRepository.findByContentsContaining(pageable, keyword);
+            case "nickname" -> this.postRepository.findByMemberNickname(pageable, keyword);
+            default -> throw new IllegalArgumentException("Invalid search type: " + about);
+        };
+
+        // Post를 PostResponse로 변환
+        List<PostListDTO> paging = postPage.getContent().stream()
+                .map(PostListDTO::new)
+                .collect(Collectors.toList());
+
+        int postCount = (int) postPage.getTotalElements();
+
+        return  PostResponseDTO
+                .builder()
+                .posts(paging)
+                .totalCount(postCount)
+                .build();
+
     }
 
     // 게시글 저장
@@ -206,4 +228,6 @@ public class PostService {
         }
         return  returnFiles;
     }
+
+
 }
