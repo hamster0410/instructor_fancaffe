@@ -83,8 +83,13 @@ public class MemberService {
             throw new RuntimeException("Nickname already exists");
         }
         if(member.isPresent()){
-            member.get().setMail(memberDTO.getMail());
-            member.get().setNickname(memberDTO.getNickname());
+            if(memberDTO.getMail() != null){
+                member.get().setMail(memberDTO.getMail());
+            }
+            if(memberDTO.getNickname() != null){
+                member.get().setNickname(memberDTO.getNickname());
+            }
+
             memberRepository.save(member.get());
         }
     }

@@ -16,7 +16,7 @@ public class MyPageController {
     @Autowired
     private MemberService memberService;
 
-    @GetMapping("/")
+    @GetMapping("/update")
     public ResponseEntity<?> memberInfo(@RequestHeader("Authorization") String token){
         try{
             MemberDTO memberDto = memberService.getByToken(token);
@@ -34,7 +34,7 @@ public class MyPageController {
         }
     }
 
-    @PostMapping("/")
+    @PostMapping("/update")
     public ResponseEntity<?> memberModify(@RequestHeader("Authorization") String token, @RequestBody MemberDTO memberDTO){
         ResponseDTO responseDTO;
         try{
