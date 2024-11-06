@@ -59,7 +59,7 @@
 | HTML5    |<img src="https://github.com/user-attachments/assets/2e122e74-a28b-4ce7-aff6-382959216d31" alt="HTML5" width="100">| 
 | CSS3    |   <img src="https://github.com/user-attachments/assets/c531b03d-55a3-40bf-9195-9ff8c4688f13" alt="CSS3" width="100">|
 | Javascript    |  <img src="https://github.com/user-attachments/assets/4a7d7074-8c71-48b4-8652-7431477669d1" alt="Javascript" width="100"> | 
-| Java    |  <img src="![java_original_logo_icon_146458](https://github.com/user-attachments/assets/f70aeb2c-38e2-4808-8ba2-cf9c36407925)" alt="Java" width="100"> | 
+| Java    |  <img src="https://github.com/user-attachments/assets/f70aeb2c-38e2-4808-8ba2-cf9c36407925" alt="Java" width="100"> | 
 <br/>
 
 ## 5.2 Frotend
@@ -72,15 +72,15 @@
 ## 5.3 Backend
 |  |  |  |
 |-----------------|-----------------|-----------------|
-| SpringBoot    |  <img src="![spring-boot-logo](https://github.com/user-attachments/assets/b4c58bff-c35d-4325-9942-df17b9981c02)" alt="springboot" width="100">    | 10.12.5    |
-| MySQL    |  <img src="![pngimg com - mysql_PNG23](https://github.com/user-attachments/assets/1c54de68-f1e2-4a90-bd89-08c03e523901)" alt="Firebase" width="100">    | 10.12.5    |
+| SpringBoot    |  <img src="https://github.com/user-attachments/assets/b4c58bff-c35d-4325-9942-df17b9981c02" alt="springboot" width="100">    | 10.12.5    |
+| MySQL    |  <img src="https://github.com/user-attachments/assets/1c54de68-f1e2-4a90-bd89-08c03e523901" alt="Firebase" width="100">    | 10.12.5    |
 <br/>
 
 ## 5.4 Cooperation
 |  |  |
 |-----------------|-----------------|
 | Git    |  <img src="https://github.com/user-attachments/assets/483abc38-ed4d-487c-b43a-3963b33430e6" alt="git" width="100">    |
-| GoogleDocs    |  <img src="![Google-Docs-logo](https://github.com/user-attachments/assets/b086fe5e-c6f1-4fcb-a60f-e9528cc9313b)" alt="Notion" width="100">    |
+| GoogleDocs    |  <img src="https://github.com/user-attachments/assets/b086fe5e-c6f1-4fcb-a60f-e9528cc9313b" alt="Notion" width="100">    |
 
 <br/>
 
