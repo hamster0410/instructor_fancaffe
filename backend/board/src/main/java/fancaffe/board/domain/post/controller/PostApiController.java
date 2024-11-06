@@ -129,7 +129,7 @@ public class PostApiController {
             return ResponseEntity.ok(postSaveDTO);
         }catch (Exception e){
             ResponseDTO responseDTO = ResponseDTO.builder()
-                    .error("save fail").build();
+                    .error( e.getMessage()).build();
             return ResponseEntity
                     .badRequest()
                     .body(responseDTO);
