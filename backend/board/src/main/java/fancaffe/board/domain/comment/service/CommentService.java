@@ -9,6 +9,7 @@ import fancaffe.board.domain.member.service.MemberService;
 import fancaffe.board.domain.post.entity.Post;
 import fancaffe.board.domain.post.service.PostService;
 import fancaffe.board.global.security.TokenProvider;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class CommentService {
     @Value("${file.upload-dir-comment}")  // 파일 저장 경로를 application.properties에 설정
@@ -63,17 +65,22 @@ public class CommentService {
         Member member = memberService.getByUserId(Long.valueOf(userId));
         Post post = postService.getByPostId(postId);
 
+        if (imageFiles == null) {
+            imageFiles = new ArrayList<>();
+        }
         //image 저장
-        List<String> imageUrl = saveImage(imageFiles,userId);
+        List<String> imageUrl = null;
+        if(!imageFiles.isEmpty()) imageUrl = saveImage(imageFiles,userId);
 
+        log.info("here1 ");
         Comment parent_comment;
         if(requestCommentDTO.getParentId() != null){
-            System.out.println("here " + requestCommentDTO.getParentId());
             parent_comment = commentRepository.findById(requestCommentDTO.getParentId()).get();
         }else{
             parent_comment = null;
         }
 
+        log.info("here2");
         Comment comment = Comment.builder()
                 .imageUrl(imageUrl)
                 .post(post)
@@ -90,7 +97,13 @@ public class CommentService {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Long UID = Long.valueOf(userId);
         Optional<Comment> comment = commentRepository.findById(commentId);
-        List<String> imageUrl = saveImage(imageFiles,userId);
+
+        if (imageFiles == null) {
+            imageFiles = new ArrayList<>();
+        }
+        //image 저장
+        List<String> imageUrl = null;
+        if(!imageFiles.isEmpty()) imageUrl = saveImage(imageFiles,userId);
 
         //코멘트가 존재하고 사용자가 쓴 글이 맞으면
         if(comment.isPresent() && UID.equals(comment.get().getMember().getId())){

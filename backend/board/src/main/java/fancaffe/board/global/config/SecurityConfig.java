@@ -38,8 +38,7 @@ public class SecurityConfig {
 //                        .requestMatchers("/auth/signup", "/auth/signin","/auth/token","/auth/mypage").permitAll()
 //                        .anyRequest().authenticated()
                           .requestMatchers("/post/write","/*/*/edit","/*/*/delete","/auth/mypage",
-                                            "/heart/*").authenticated()
-
+                                            "/heart/*","/comment/create/*","/comment/update/*","/comment/delete/*").authenticated()
                                     .anyRequest().permitAll()
                 );
 

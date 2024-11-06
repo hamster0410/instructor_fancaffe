@@ -50,10 +50,12 @@ public class CommentController {
             @RequestPart(value = "imageFile", required = false) List<MultipartFile> imageFiles) {
 
         ResponseDTO responseDTO;
+        // imageFiles가 null인지 확인하고 null이면 빈 리스트로 초기화
 
          // 댓글 생성 로직
         try{
              commentService.createComment(token,postId,requestCommentDTO,imageFiles);
+
              responseDTO =ResponseDTO.builder()
                      .message("comment success")
                      .build();

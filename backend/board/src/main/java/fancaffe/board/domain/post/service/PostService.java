@@ -85,8 +85,12 @@ public class PostService {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member member = memberService.getByUserId(Long.valueOf(userId));
 
-        List<String> imageUrl = saveImage(imageFiles,userId);
-
+        if (imageFiles == null) {
+            imageFiles = new ArrayList<>();
+        }
+        //image 저장
+        List<String> imageUrl = null;
+        if(!imageFiles.isEmpty()) imageUrl = saveImage(imageFiles,userId);
 
         Post post = Post.builder()
                 .title(params.getTitle())
@@ -128,7 +132,13 @@ public class PostService {
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("post not found : " + postId));
         String userId = tokenProvider.extractIdByAccessToken(token);
-        List<String> imageUrl = saveImage(imageFiles,userId);
+
+        if (imageFiles == null) {
+            imageFiles = new ArrayList<>();
+        }
+        //image 저장
+        List<String> imageUrl = null;
+        if(!imageFiles.isEmpty()) imageUrl = saveImage(imageFiles,userId);
 
         post.setTitle(params.getTitle());
         post.setImageUrl(imageUrl);
