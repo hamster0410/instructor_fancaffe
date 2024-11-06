@@ -38,8 +38,8 @@
 |  |  |  |
 |-----------------|-----------------|-----------------|
 | 한선우    |  <img src="https://avatars.githubusercontent.com/u/120350053?v=4" alt="이동규" width="100"> | <ul><li>프로젝트 계획 및 관리</li><li>REST API 명세 작성 및 구현</li><li>ERD 설계</li></ul>     |
-| 신유승   |  <img src="https://github.com/user-attachments/assets/78ec4937-81bb-4637-975d-631eb3c4601e" alt="신유승" width="100">| <ul><li>메인 페이지 개발</li><li>동아리 만들기 페이지 개발</li><li>커스텀훅 개발</li></ul> |
-| 김나연   |  <img src="https://github.com/user-attachments/assets/78ce1062-80a0-4edb-bf6b-5efac9dd992e" alt="김나연" width="100">    |<ul><li>홈 페이지 개발</li><li>로그인 페이지 개발</li><li>동아리 찾기 페이지 개발</li><li>동아리 프로필 페이지 개발</li><li>커스텀훅 개발</li></ul>  |
+| 최소진   |  <img src="https://github.com/user-attachments/assets/78ec4937-81bb-4637-975d-631eb3c4601e" alt="신유승" width="100">| <ul><li>메인 페이지 개발</li><li>동아리 만들기 페이지 개발</li><li>커스텀훅 개발</li></ul> |
+| 최정아   |  <img src="https://github.com/user-attachments/assets/78ce1062-80a0-4edb-bf6b-5efac9dd992e" alt="김나연" width="100">    |<ul><li>홈 페이지 개발</li><li>로그인 페이지 개발</li><li>동아리 찾기 페이지 개발</li><li>동아리 프로필 페이지 개발</li><li>커스텀훅 개발</li></ul>  |
 
 
 <br/>
@@ -80,38 +80,40 @@
 # 6. Project Structure (프로젝트 구조)
 ```plaintext
 project/
-├── public/
-│   ├── index.html           # HTML 템플릿 파일
-│   └── favicon.ico          # 아이콘 파일
-├── src/
-│   ├── assets/              # 이미지, 폰트 등 정적 파일
-│   ├── components/          # 재사용 가능한 UI 컴포넌트
-│   ├── hooks/               # 커스텀 훅 모음
-│   ├── pages/               # 각 페이지별 컴포넌트
-│   ├── App.js               # 메인 애플리케이션 컴포넌트
-│   ├── index.js             # 엔트리 포인트 파일
-│   ├── index.css            # 전역 css 파일
-│   ├── firebaseConfig.js    # firebase 인스턴스 초기화 파일
-│   package-lock.json    # 정확한 종속성 버전이 기록된 파일로, 일관된 빌드를 보장
-│   package.json         # 프로젝트 종속성 및 스크립트 정의
-├── .gitignore               # Git 무시 파일 목록
-└── README.md                # 프로젝트 개요 및 사용법
+├── domain/
+│   ├── comment/           # 댓글 도메인 (아래 동일)
+│   │      ├── controller           
+│   │      ├── dto                  
+│   │      ├── entity               
+│   │      ├── repository           
+│   │      └── service              
+│   │
+│   ├── heart/             # 좋아요 도메인
+│   ├── member/            # 회원 도메인
+│   └── post/              # 게시글 도메인
+│   
+│   
+└── global/
+    ├── config/              # 보안 및 허용 경로 설정
+    ├── controller/          # 이미지 파일 업로드 
+    ├── dto/                 # 기본 시간 및 응답 형식
+    ├── init/                # 시작 시 초기 디렉토리 설정
+    └── security/            # jwt 인증 필터 및 토큰 생성자
 ```
 
 <br/>
 <br/>
 
 # 7. Development Workflow (개발 워크플로우)
-## 브랜치 전략 (Branch Strategy)
-우리의 브랜치 전략은 Git Flow를 기반으로 하며, 다음과 같은 브랜치를 사용합니다.
+## 개발 전략 (Branch Strategy)
+우리의 개발 전략은 back과 front를 분리하여 개발합니다.
 
-- Main Branch
-  - 배포 가능한 상태의 코드를 유지합니다.
+- back end
+  - 기능 추가시 feat, 수정시 fix로 commit하여 업로드합니다.
   - 모든 배포는 이 브랜치에서 이루어집니다.
   
-- {name} Branch
-  - 팀원 각자의 개발 브랜치입니다.
-  - 모든 기능 개발은 이 브랜치에서 이루어집니다.
+- front end
+  - 다른 repo에서 개발하여 업로드합니다.
 
 <br/>
 <br/>
