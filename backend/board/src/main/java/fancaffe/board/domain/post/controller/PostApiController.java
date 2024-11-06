@@ -157,7 +157,7 @@ public class PostApiController {
 
     // 게시글 작성자 확인
     @GetMapping("/{category}/{post_id}/edit")
-    public ResponseEntity<?> postEdit( @RequestHeader("Authorization") String token,
+    public ResponseEntity<?> postEdit( @RequestHeader(value = "Authorization",required = false) String token,
                                     @PathVariable("category") String category,
                                     @PathVariable("post_id") Long postId
                                     ) {

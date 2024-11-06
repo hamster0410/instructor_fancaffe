@@ -1,6 +1,7 @@
 package fancaffe.board.domain.comment.service;
 
 import fancaffe.board.domain.comment.dto.CommentDTO;
+import fancaffe.board.domain.comment.dto.CommentResponseDTO;
 import fancaffe.board.domain.comment.dto.RequestCommentDTO;
 import fancaffe.board.domain.comment.entity.Comment;
 import fancaffe.board.domain.comment.repository.CommentRepository;
@@ -12,9 +13,6 @@ import fancaffe.board.global.security.TokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,15 +41,18 @@ public class CommentService {
     private PostService postService;
 
 
-    public List<CommentDTO> getCommentsByPostId(Long postId, int page) {
+    public CommentResponseDTO getCommentsByPostId(Long postId) {
         // 페이지 크기를 10으로 지정
-        Pageable pageable = PageRequest.of(page, 10);
-        Page<Comment> comments = commentRepository.findByPostId(postId, pageable);
+        List<Comment> comments = commentRepository.findByPostId(postId);
+        List<CommentDTO> commentDTOS = comments.stream()
+                .map(CommentDTO::new)  // Comment 객체를 CommentDTO로 변환
+                .toList();
 
-        List<CommentDTO> commentDTOList = new ArrayList<>();
-        return comments.getContent().stream()
-                .map(CommentDTO::new)
-                .collect(Collectors.toList());
+        return CommentResponseDTO
+                .builder()
+                .comments(commentDTOS)
+                .totalCommentCount(commentDTOS.size())
+                .build();
 
     }
 
@@ -151,5 +152,15 @@ public class CommentService {
             }
         }
         return  returnFiles;
+    }
+
+    public boolean checkCommentWriter(String token, Long commentId) {
+        String userId = tokenProvider.extractIdByAccessToken(token);
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("comment not found : " + commentId));
+        if(String.valueOf(comment.getMember().getId()).equals(userId)){
+            return true;
+        }else{
+            return false;
+        }
     }
 }

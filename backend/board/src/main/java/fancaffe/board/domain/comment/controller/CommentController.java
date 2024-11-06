@@ -21,16 +21,10 @@ public class CommentController {
 
 
     @GetMapping("/{postId}")
-    public ResponseEntity<?> getCommentsByPostId(@PathVariable("postId") Long postId,@RequestParam(value = "page", defaultValue = "1") int pageid) {
+    public ResponseEntity<?> getCommentsByPostId(@PathVariable("postId") Long postId) {
         // 댓글 조회 로직
         try{
-            List<CommentDTO> comments = commentService.getCommentsByPostId(postId, pageid - 1) ;
-            Long commentCount = commentService.getCommentCount(postId);
-            CommentResponseDTO commentResponseDTO = CommentResponseDTO
-                    .builder()
-                    .comments(comments)
-                    .totalCommentCount(commentCount)
-                    .build();
+            CommentResponseDTO commentResponseDTO = commentService.getCommentsByPostId(postId);
 
             return ResponseEntity.ok().body(commentResponseDTO);
         }catch(Exception e){
@@ -69,6 +63,23 @@ public class CommentController {
         }
 
     }
+
+    @GetMapping(value="/update/{commentId}")
+    public ResponseEntity<?> checkingWriter(@RequestHeader("Authorization") String token ,
+                                            @PathVariable("commentId") Long commentId){
+        try{
+            boolean writer_check = commentService.checkCommentWriter(token ,commentId);
+
+            return ResponseEntity.ok(writer_check);
+        }catch (Exception e){
+            ResponseDTO responseDTO = ResponseDTO.builder()
+                    .error(e.getMessage()).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDTO);
+        }
+    }
+
 
     @PutMapping(value = "/update/{commentId}", consumes = "multipart/form-data")
     public ResponseEntity<?> updateComment(@RequestHeader("Authorization") String token ,
