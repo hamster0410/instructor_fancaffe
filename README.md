@@ -72,8 +72,8 @@
 ## 5.3 Backend
 |  |  |  |
 |-----------------|-----------------|-----------------|
-| SpringBoot    |  <img src="https://github.com/user-attachments/assets/b4c58bff-c35d-4325-9942-df17b9981c02" alt="springboot" width="100">    | 10.12.5    |
-| MySQL    |  <img src="https://github.com/user-attachments/assets/1c54de68-f1e2-4a90-bd89-08c03e523901" alt="Firebase" width="100">    | 10.12.5    |
+| SpringBoot    |  <img src="https://github.com/user-attachments/assets/b4c58bff-c35d-4325-9942-df17b9981c02" alt="springboot" width="100">    | 3.1.0    |
+| MySQL    |  <img src="https://github.com/user-attachments/assets/1c54de68-f1e2-4a90-bd89-08c03e523901" alt="Firebase" width="100">    | 8.0.39    |
 <br/>
 
 ## 5.4 Cooperation
