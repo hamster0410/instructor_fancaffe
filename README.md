@@ -80,7 +80,7 @@
 |  |  |
 |-----------------|-----------------|
 | Git    |  <img src="https://github.com/user-attachments/assets/483abc38-ed4d-487c-b43a-3963b33430e6" alt="git" width="100">    |
-| GoogleDocs    |  <img src="https://github.com/user-attachments/assets/b086fe5e-c6f1-4fcb-a60f-e9528cc9313b" alt="Notion" width="100">    |
+| GoogleDocs    |  <img src="https://github.com/user-attachments/assets/b086fe5e-c6f1-4fcb-a60f-e9528cc9313b" alt="Notion" width="200">    |
 
 <br/>
 
