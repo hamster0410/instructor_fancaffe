@@ -114,7 +114,7 @@ public class PostApiController {
             @PathVariable("category") String category,
             @PathVariable("post_id") Long postId,
             @RequestParam(value = "page", defaultValue = "1") int page) {
-
+        System.out.println("check");
         try{
             // 포스트 조회 서비스 호출
             PostDetailDTO postDetailDTO = postService.checkByPostId(postId);
