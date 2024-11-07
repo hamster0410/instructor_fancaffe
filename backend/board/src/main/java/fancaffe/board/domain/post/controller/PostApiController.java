@@ -73,13 +73,8 @@ public class PostApiController {
     @GetMapping("/{category}")
     public ResponseEntity<?> main_list(@PathVariable("category") String category,@RequestParam(value = "page", defaultValue = "1") int pageid){
         try{
-            List<PostListDTO> paging = postService.getCategoryPosts(pageid-1, category);
-            Long postCount = postService.getPostCount();
-            PostResponseDTO postResponseDTO = PostResponseDTO
-                    .builder()
-                    .posts(paging)
-                    .totalCount(postCount)
-                    .build();
+            PostResponseDTO postResponseDTO = postService.getCategoryPosts(pageid-1, category);
+
             return ResponseEntity.ok().body(postResponseDTO);
         }catch(Exception e){
             ResponseDTO responseDTO = ResponseDTO.builder()

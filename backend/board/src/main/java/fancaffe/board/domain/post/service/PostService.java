@@ -67,13 +67,21 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostListDTO> getCategoryPosts(int page, String category) {
+    public PostResponseDTO getCategoryPosts(int page, String category) {
         Pageable pageable = (Pageable) PageRequest.of(page,10);
         Page<Post> postPage = this.postRepository.findByCategory(pageable,category);
         // Post를 PostResponse로 변환
-        return postPage.getContent().stream()
+        List<PostListDTO> postListDTOList =postPage.getContent().stream()
                 .map(PostListDTO::new)
                 .collect(Collectors.toList());
+
+
+        return PostResponseDTO
+                .builder()
+                .posts(postListDTOList)
+                .totalCount(postListDTOList.size())
+                .build();
+
     }
 
     @Transactional
@@ -195,13 +203,13 @@ public class PostService {
     }
 
     public void increaseComment(Post post) {
-        post.setCountHeart(post.getCountComment() + 1);
+        post.setCountComment(post.getCountComment() + 1);
         postRepository.save(post);
     }
 
 
     public void decreaseComment(Post post) {
-        post.setCountHeart(post.getCountComment() - 1);
+        post.setCountComment(post.getCountComment() - 1);
         postRepository.save(post);
     }
 
