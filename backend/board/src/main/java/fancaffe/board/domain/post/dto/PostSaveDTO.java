@@ -16,7 +16,7 @@ public class PostSaveDTO {
     private Long hits;
     private String member;
     private String category;
-    private List<String> imageUrl;
+
 
 
     public PostSaveDTO(Post post) {
@@ -24,7 +24,6 @@ public class PostSaveDTO {
         this.title = post.getTitle();
         this.contents = post.getContents();
         this.hits = post.getHits();
-        this.imageUrl = post.getImageUrl();
         this.member = post.getMember().getUsername();
         this.category = post.getCategory();
     }

@@ -111,23 +111,15 @@ public class PostService {
 
     // 게시글 저장
     @Transactional
-    public PostSaveDTO savePost(final PostRequest params, String token,List<MultipartFile> imageFiles) throws IOException {
+    public PostSaveDTO savePost(final PostRequest params, String token) throws IOException {
         String userId = tokenProvider.extractIdByAccessToken(token);
         Member member = memberService.getByUserId(Long.valueOf(userId));
-
-        if (imageFiles == null) {
-            imageFiles = new ArrayList<>();
-        }
-        //image 저장
-        List<String> imageUrl = null;
-        if(!imageFiles.isEmpty()) imageUrl = saveImage(imageFiles,userId);
 
         Post post = Post.builder()
                 .title(params.getTitle())
                 .member(member)
                 .contents(params.getContents())
                 .category(params.getCategory())
-                .imageUrl(imageUrl)
                 .hits(0L)
                 .build();
         postRepository.save(post);
@@ -171,7 +163,6 @@ public class PostService {
         if(!imageFiles.isEmpty()) imageUrl = saveImage(imageFiles,userId);
 
         post.setTitle(params.getTitle());
-        post.setImageUrl(imageUrl);
         post.setCategory(params.getCategory());
         post.setContents(params.getContents());
         postRepository.save(post);

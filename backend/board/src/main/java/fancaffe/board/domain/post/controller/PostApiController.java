@@ -133,11 +133,10 @@ public class PostApiController {
     // 게시글 저장
     @PostMapping("/post/write")
     public ResponseEntity<?> savePost( @RequestHeader("Authorization") String token,
-                                       @RequestPart(value = "postData") final PostRequest params,
-                                       @RequestPart(value = "imageFile", required = false) List<MultipartFile> imageFiles) {
+                                       @RequestBody final PostRequest params) {
 
         try{
-            PostSaveDTO postSaveDTO = postService.savePost(params,token,imageFiles);
+            PostSaveDTO postSaveDTO = postService.savePost(params,token);
 
             return ResponseEntity.ok(postSaveDTO);
         }catch (Exception e){
