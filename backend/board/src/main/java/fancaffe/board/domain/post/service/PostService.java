@@ -15,12 +15,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -202,26 +199,6 @@ public class PostService {
 
     public Long getPostCount() {
         return postRepository.count();
-    }
-
-    public List<String> saveImage(List<MultipartFile> imageFiles, String userId) throws IOException {
-        List<String> returnFiles = new ArrayList<>();
-        Date date = new Date();
-        for(MultipartFile imageFile : imageFiles){
-            if (imageFile != null && !imageFile.isEmpty()) {
-                // 고유한 파일 이름 생성
-                String uniqueFileName =  userId + "_" + date.getDate() + "_" + imageFile.getOriginalFilename();
-                File destinationFile = new File(uploadDir + File.separator + uniqueFileName);
-
-                // 파일 시스템에 이미지 파일 저장
-                imageFile.transferTo(destinationFile);
-
-                // 이미지 URL 설정 (예: http://localhost:8080/images/파일명)
-                System.out.println("unique filename" + uniqueFileName + imageFile.getContentType());
-                returnFiles.add(uniqueFileName);
-            }
-        }
-        return  returnFiles;
     }
 
 
