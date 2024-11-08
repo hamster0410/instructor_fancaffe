@@ -150,18 +150,14 @@ public class PostService {
     }
 
     //게시글 수정
-    public PostSaveDTO updatePost(String token, Long postId, PostRequest params, List<MultipartFile> imageFiles) throws IOException {
+    public PostSaveDTO updatePost(String token, Long postId, PostRequest params){
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("post not found : " + postId));
         String userId = tokenProvider.extractIdByAccessToken(token);
 
-        if (imageFiles == null) {
-            imageFiles = new ArrayList<>();
+        if(!Long.valueOf(userId).equals(post.getMember().getId())){
+            throw new IllegalArgumentException("user is not writer");
         }
-        //image 저장
-        List<String> imageUrl = null;
-        if(!imageFiles.isEmpty()) imageUrl = saveImage(imageFiles,userId);
-
         post.setTitle(params.getTitle());
         post.setCategory(params.getCategory());
         post.setContents(params.getContents());

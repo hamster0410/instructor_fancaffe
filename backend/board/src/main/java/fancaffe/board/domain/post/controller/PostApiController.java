@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -173,16 +172,15 @@ public class PostApiController {
     public ResponseEntity<?> postEditSave( @RequestHeader("Authorization") String token,
                                            @PathVariable("category") String category,
                                            @PathVariable("post_id") Long postId,
-                                           @RequestPart("postData") final PostRequest params,
-                                           @RequestPart(value = "imageFile", required = false) List<MultipartFile> imageFiles
+                                           @RequestBody final PostRequest params
     ) {
         try{
-            PostSaveDTO postSaveDTO = postService.updatePost(token ,postId, params, imageFiles);
+            PostSaveDTO postSaveDTO = postService.updatePost(token ,postId, params);
 
             return ResponseEntity.ok(postSaveDTO);
         }catch(Exception e){
             ResponseDTO responseDTO = ResponseDTO.builder()
-                    .error("editing fail").build();
+                    .error(e.getMessage()).build();
             return ResponseEntity
                     .badRequest()
                     .body(responseDTO);

@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.print.attribute.standard.Media;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -66,7 +65,7 @@ public class FileApiController {
 
         } catch (IOException e) {
             // 예외 처리는 따로 해주는 게 좋습니다.
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
     @GetMapping(value = "/comment", produces = { MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
