@@ -71,12 +71,12 @@ public class PostService {
         List<PostListDTO> postListDTOList =postPage.getContent().stream()
                 .map(PostListDTO::new)
                 .collect(Collectors.toList());
-
+        int postCount = (int) postPage.getTotalElements();
 
         return PostResponseDTO
                 .builder()
                 .posts(postListDTOList)
-                .totalCount(postListDTOList.size())
+                .totalCount(postCount)
                 .build();
 
     }
