@@ -1,4 +1,5 @@
 # KOSTA 2차 프로젝트 : 강사님 팬카페
+<br/>
 
 # 📃개요
 
@@ -13,16 +14,22 @@
 - ERD 설계
 - 동작 화면
 - issue 사항
+<br/>
+
 
 # 📌 프로젝트 목적
 
 - 게시판 CRUD를 기반으로한 웹 게시판 구축
 - REST API를 기반으로 프레임워크간 통신 구현
+<br/>
+
 
 # 💡 아이디어 및 배경
 
 - 인기 유튜버 **침착맨**의 팬카페인 **침하하**를 모티브로 하여 우리를 가르치느라 수고하시는 강사님에 대한 웹 게시판을 구축하고자 하였습니다.
 - 참여형 게시판을 통해 학생들이 서로 코딩 지식을 공유하거나 강사님 명대사나 질문란 등 학생과 강사님간에 소통의 공간을 마련하고자 하였습니다.
+<br/>
+
 
 # 🤼 팀 멤버 소개
 | **항목**   | **선우**                                                                                       | **소진**                                                                                       | **정아**                                                                                       |
@@ -31,6 +38,8 @@
 | **역할**   | BE                                                                                             | FE                                                                                             | FE                                                                                             |
 | **GitHub** | [한선우 GitHub](https://github.com/username)                                                   | [최소진 GitHub](https://github.com/username)                                                   | [최정아 GitHub](https://github.com/username)                                                   |
 | **주요 작업** | 1. 팀 일정 관리<br>2. 프로젝트 계획 및 관리<br>3. REST API 명세 작성 및 구현<br>4. ERD 설계<br>5. JWT 토큰 인증 구현<br>6. 게시판 CRUD, 좋아요, 댓글 구현 | 1. 회원 관련 기능<br>2. 글 목록 조회 및 수정 삭제<br>3. 이미지 업로드<br>4. 댓글 및 대댓글 로직 구현<br>5. 검색 기능<br>6. 게시글 삭제 및 수정 | 1. 글 편집 에디터<br>2. 글 상세 조회<br>3. 추천/추천취소 기능<br>4. 시간 출력 수정<br>5. 커스텀 훅 생성 및 적용 |
+<br/>
+
 
 # 🔑 주요 기능
 
@@ -46,6 +55,8 @@
 # <img src="https://github.com/user-attachments/assets/c358e165-b991-4930-85b1-cddc0433a5d9" width="50"> 사용된 기술 스택
 
 ![%EC%A0%9C%EB%AA%A9%EC%9D%84-%EC%9E%85%EB%A0%A5%ED%95%B4%EC%A3%BC%EC%84%B8%EC%9A%94_-001](https://github.com/user-attachments/assets/344ce12c-601b-42d2-b48a-53b9440cda87)
+
+<br/>
 
 
 # 🌌 프로젝트 구조
@@ -95,6 +106,8 @@ project/
     ├── init/                # 시작 시 초기 디렉토리 설정
     └── security/            # jwt 인증 필터 및 토큰 생성자
 ```
+<br/>
+
 
 # ✉️ REST API 명세서
 
@@ -486,12 +499,18 @@ project/
 
 </details>
 
+<br/>
+
 
 
 # 🧱  ERD 설계
 
 ![image](https://github.com/user-attachments/assets/21368172-5e77-4df5-890b-b0e89556abee)
+<br/>
+
 
 # 🔥 동작 화면
+<br/>
+
 
 # ❓ Issue 사항
