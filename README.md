@@ -39,7 +39,7 @@
 | **사진**   | ![한선우](https://avatars.githubusercontent.com/u/120350053?v=4)                              | ![최소진](https://github.com/user-attachments/assets/646fbee6-a1b8-402e-9b91-93dd2c31a778)    | ![최정아](https://github.com/user-attachments/assets/20aab45b-c93b-4166-9c77-acb1288f47fe)    |
 | **역할**   | BackEnd                                                                                             | FrontEnd                                                                                             | FrontEnd                                                                                             |
 | **GitHub** | [한선우 GitHub](https://github.com/hamster0410)                                                   | [최소진 GitHub](https://github.com/sosojean)                                                   | [최정아 GitHub](https://github.com/berryicebox)                                                   |
-| **주요 작업** | 1. 팀 일정 관리<br>2. 프로젝트 계획 및 관리<br>3. REST API 명세 작성 및 구현<br>4. ERD 설계<br>5. JWT 토큰 인증 구현<br>6. 게시판 CRUD, 좋아요, 댓글 구현 | 1. 회원 관련 기능<br>2. 글 목록 조회 및 수정 삭제<br>3. 이미지 업로드<br>4. 댓글 및 대댓글 로직 구현<br>5. 검색 기능<br>6. 게시글 삭제 및 수정 | 1. 글 편집 에디터<br>2. 글 상세 조회<br>3. 추천/추천취소 기능<br>4. 시간 출력 수정<br>5. 커스텀 훅 생성 및 적용 |
+| **주 작업** | 1. 팀 일정 관리<br>2. 프로젝트 계획 및 관리<br>3. REST API 명세 작성 및 구현<br>4. ERD 설계<br>5. JWT 토큰 인증 구현<br>6. 게시판 CRUD, 좋아요, 댓글 구현 | 1. 회원 관련 기능<br>2. 글 목록 조회 및 수정 삭제<br>3. 이미지 업로드<br>4. 댓글 및 대댓글 로직 구현<br>5. 검색 기능<br>6. 게시글 삭제 및 수정 | 1. 글 편집 에디터<br>2. 글 상세 조회<br>3. 추천/추천취소 기능<br>4. 시간 출력 수정<br>5. 커스텀 훅 생성 및 적용 |
 <br/>
 
 
