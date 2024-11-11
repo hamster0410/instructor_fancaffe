@@ -1,0 +1,17 @@
+.writeButtonContainer{
+    top:820px;
+    right: 30px;
+    position: fixed;
+}
+
+.writeButtonIcon {
+    // color
+    background-color: var(--point-background-color-90);
+    color: var(--body-background-color);
+    box-shadow: 5px 5px 10px 1px var(--point-shadow-color-30);
+
+    // 구형, 크기, 내부 간격값 조절
+    border-radius: 50%;
+    font-size: 2.5rem;
+    padding: 1rem;
+}

@@ -1,0 +1,37 @@
+.category-container {
+  z-index: 999;
+  width: 100%;
+  position: absolute;
+  top: 76px;
+  left: 0;
+  color: #001935;
+  display: flex;
+  justify-content: center;
+
+  .category-menu {
+    justify-self: center;
+    width: var(--site-width);
+
+    .category-menu-item {
+      li {
+        margin-top: 24px;
+        margin-bottom: 24px;
+
+      }
+
+    }
+  }
+}
+
+.category-background {
+  z-index: 999;
+
+  background: #ffffff;
+  top: var(--header-height);
+  left: 0;
+  position: absolute;
+  width: 100%;
+  height: var(--category-height);
+
+
+}

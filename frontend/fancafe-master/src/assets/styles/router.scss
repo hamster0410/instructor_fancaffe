@@ -1,0 +1,16 @@
+.outer-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .inner-container {
+    width: var(--site-width);
+
+    WriteButton {
+      position: absolute;
+    }
+
+  }
+}

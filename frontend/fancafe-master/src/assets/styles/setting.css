@@ -1,0 +1,64 @@
+:root {
+    --font-family: "pretendard variable", pretendard, "sf pro kr", "sf pro text", "sf pro icons", "apple sd gothic neo", -apple-system, blinkmacsystemfont, roboto, "noto sans kr", "segoe ui", "malgun gothic", "apple color emoji", "segoe ui emoji", "segoe ui symbol", sans-serif;
+    --font-family-content: "sf pro kr", "sf pro text", "sf pro icons", "apple sd gothic neo", -apple-system, blinkmacsystemfont, system-ui, roboto, "helvetica neue", "segoe ui", "noto sans kr", "malgun gothic", "apple color emoji", "segoe ui emoji", "segoe ui symbol", sans-serif;
+    --body-font-color: #000000;
+    --body-background-color: #FFFFFFFF;
+    --body-background-color-50: rgba(255, 255, 255, 0.5);
+    --body-background-color-30: rgba(255, 255, 255, 0.3);
+
+    --header-font-color: #FFF;
+    --header-background-color: var(--point-color);
+    --point-color: #1CA8AF;
+    --point-background-color: #1CA8AF;
+    --point-background-color-10: #1CA8AF1a;
+    --point-background-color-20: #1CA8AF33;
+    --point-background-color-80: #1CA8AFc8;
+    --point-background-color-90: #1CA8AFe6;
+    --point-shadow-color: #0E7A80;
+    --point-shadow-color-30: rgba(0, 0, 0, 0.2);
+    --point-shadow-color-50: #0E7A8080;
+
+    --default-font-color: #000;
+    --reverse-font-color: #eee;
+    --default-background-color: #fff;
+    --layer-background-color: #fff;
+    --sercondary-background-color: #eee;
+    --default-anchor-color: #000;
+    --default-visited-anchor-color: #999;
+    --alpha-3: rgb(0 0 0 / 3%);
+    --alpha-5: rgb(0 0 0 / 5%);
+    --alpha-10: rgb(0 0 0 / 10%);
+    --alpha-20: rgb(0 0 0 / 20%);
+    --alpha-30: rgb(0 0 0 / 30%);
+    --alpha-40: rgb(0 0 0 / 40%);
+    --alpha-50: rgb(0 0 0 / 50%);
+    --alpha-70: rgb(0 0 0 / 70%);
+    --alpha-80: rgb(0 0 0 / 80%);
+    --alpha-reverse-90: rgb(255 255 255 / 80%);
+    --warning-color: #E73C3C;
+    --warning-color-10: rgb(231 60 60 / 10%);
+    --apple-color: #000;
+    --google-color: #d0543f;
+    --facebook-color: #1a76f2;
+    --twitter-color: #1ea1f1;
+    --naver-color: #1ec800;
+    --kakao-color: #ffe003;
+    --tumblr-color: #001935;
+    --pinterest-color: #e70022;
+    --flash-success-color: #10b886;
+    --flash-error-color: #e74c3c;
+    --list-line: var(--alpha-5);
+    --gap: 10px;
+    --mobile-gap: 10px;
+}
+
+:root {
+    --site-width: 1080px;
+    --banner-gap: 24px;
+    --banner-mobile-gap: 16px;
+    --header-height: 76px;
+    --category-height: 300px;
+
+}
+
+

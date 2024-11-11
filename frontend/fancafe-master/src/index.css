@@ -1,0 +1,12 @@
+@font-face {
+    font-family: "pretendard";
+    font-weight: normal;
+    src: url("./assets/fonts/PretendardVariable.ttf") format("truetype");
+}
+
+
+*, body {
+    margin: 0;
+    font-family: "pretendard"
+}
+

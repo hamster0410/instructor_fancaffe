@@ -1,0 +1,26 @@
+.pagination {
+  //position: absolute;
+  //bottom: 0;
+
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  justify-self: center;
+  display: flex;
+  flex-direction: row;
+
+
+  button {
+    margin-left: 5px;
+    border-radius: 10px /10px;
+    border: none;
+    width: 45px;
+    height: 45px;
+  }
+
+  .selected {
+
+    color: var(--header-font-color);
+    background: var(--point-background-color);
+  }
+}

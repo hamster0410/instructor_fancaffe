@@ -1,0 +1,16 @@
+.heart-button {
+  border: 1px solid transparent;
+  border-radius: 20px/20px;
+  padding: 1rem;
+
+  font-size: 1.3rem;
+  font-weight: bold;
+
+  .icon {
+    color: var(--point-color);
+
+    * {
+      margin: 0px 3px 0px 3px;
+    }
+  }
+}
