@@ -510,7 +510,49 @@ project/
 
 
 # 🔥 동작 화면
+
+### 회원가입
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/0674787e-5e62-4c01-9f85-d1e624afc868" style="display: block; margin: auto; border: 2px solid #000;">
+</p>
+<br/>
+
+### 게시글 작성
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/8eb5fdf5-8b10-483c-ae50-384ff7e3d4ad" style="display: block; margin: auto; border: 2px solid #000;">
+</p>
+<br/>
+
+### 게시글 추천
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ee1b9dcb-f4bd-41fd-8011-b2c276f399fd" style="display: block; margin: auto; border: 2px solid #000;">
+</p>
+<br/>
+
+### 댓글 작성 
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ecc2d770-b6ed-47cd-9eaf-51b0fc8987b5" style="display: block; margin: auto; border: 2px solid #000;">
+</p>
+<br/>
+
 <br/>
 
 
 # ❓ Issue 사항
+- 선우 : 이슈
+   - jwt 인증 토큰 구현 : 라이브러리 선정 및 함수 파악 어려움
+   - 대댓글 엔티티 순환참조 : 댓글에 부모를 dto로 리턴하여 에러 해결
+   - 이미지 업로드 기능 구현 : 이미지 업로드시 서버에 저장하고 반환하는 방법 선정에서 테이블에 이미지 url컬럼을 생성하는가에 대한 고민이 많았음
+   - 컨텐츠 구현 부족 : 내가 좋아요한 게시판, 작성한 게시판 조회 등 구현해야할 컨텐츠가 많았음에도 파이널프로젝트 시작으로 구현하지 못한것에 대한 아쉬움 
+
+- 소진 : 이슈
+  - 이미지 업로드 기능 구현: 이미지 파일을 업로드하는 과정에서 어려움이 있었음.
+  - 대댓글 정렬: 댓글과 대댓글을 계층 구조로 정렬하는 기능 구현에 어려움이 있었음.
+  - 컴포넌트 간 부모-자식 관계 설정: 컴포넌트 간 부모-자식 관계를 설정하고 관리하는 과정에서 어려움을 느꼈음.
+  - 컴포넌트 리렌더링: 추천/추천 취소 시 컴포넌트가 의도한 대로 리렌더링되지 않는 문제 발생.
+  - JWT 리프레시 토큰 발급: JWT 리프레시 토큰을 발급하여 인증 상태를 갱신하는 기능 구현의 어려움.
+
+- 정아 : 이슈
+  - 이미지 업로드 기능: 이미지 업로드 기능 구현에 어려움이 있었음.
+  - 추천/추천 취소 리렌더링 문제: 추천/추천 취소 기능 실행 시 컴포넌트가 의도한 대로 리렌더링되지 않는 문제 발생.
