@@ -424,6 +424,7 @@ project/
 - **Method**: POST  
 - **URL**: `/comment/create/postId`  
 - **입력 데이터**:
+    form-data에 commentData로 입력 
     ```json
     {
         "parentId": "testParent",
